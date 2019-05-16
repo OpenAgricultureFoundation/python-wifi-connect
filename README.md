@@ -1,7 +1,7 @@
 # python-wifi-connect
 An application that displays a wifi configuration UI for embedded Linux devices.
 
-Inspired by the rust language based [wifi-connect](https://github.com/balena-io/wifi-connect) project written by [balena.io](https://www.balena.io/).
+Inspired by the [wifi-connect](https://github.com/balena-io/wifi-connect) project written by [balena.io](https://www.balena.io/).
 
 ***
 ![How it works](./docs/images/how-it-works.png?raw=true)
