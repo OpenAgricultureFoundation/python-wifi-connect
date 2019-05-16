@@ -1,4 +1,4 @@
-import os, getopt, sys
+import os, getopt, sys, json
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from io import BytesIO
 
@@ -20,6 +20,49 @@ class MyHTTPServer(HTTPServer):
 # A custom http request handerl class to handle the POST-ed data from the form.
 class MyHTTPReqHandler(SimpleHTTPRequestHandler):
 
+    # See if this is a specific request, otherwise let the server handle it.
+    def do_GET(self):
+
+        # Handle a REST API request to return the list of SSIDs
+        if '/networks' == self.path:
+            self.send_response(200)
+            self.end_headers()
+            response = BytesIO()
+#debugrob, test ssids, get from NetworkManager on RPI
+            ssids = [{"ssid": "open network", "security": "NONE"}, \
+                     {"ssid": "wpa2", "security":"WPA2"}, \
+                     {"ssid": "enterprise", "security": "ENTERPRISE"}]
+            # always add a hidden place holder
+            ssids.append({"ssid": "Enter a hidden WiFi name", \
+                          "security": "HIDDEN"})
+
+#debugrob: also test the UI handling no SSIDs
+#            ssids = []
+            response.write(json.dumps(ssids).encode('utf-8'))
+            print(f'GET {self.path} returning: {response.getvalue()}')
+            self.wfile.write(response.getvalue())
+            return
+            """debugrob, how do these compare with the python NetworkManager,
+            and the debian server?   (they match iPhone options)
+            Security:
+                NONE         
+                HIDDEN         
+                WEP         
+                WPA        
+                WPA2      
+                ENTERPRISE
+            Creds:
+                NONE,
+                HIDDEN, WEP, WPA, WPA2 need password
+                ENTERPRISE needs username and password
+            """
+#debugrob: UI needs to handle the security type and ask for (un-hide form fields) for the proper creds.
+
+        # All other requests are handled by the server which vends files from
+        # the ui_path we were initialized with.
+        super().do_GET()
+
+
     # test with: curl localhost:5000 -d "{'name':'value'}"
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
@@ -28,6 +71,7 @@ class MyHTTPReqHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         response = BytesIO()
         print(f'POST received: {body}')
+#debugrob: parse this body for the form fields
         response.write(b'OK\n')
         self.wfile.write(response.getvalue())
 
