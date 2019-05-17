@@ -17,6 +17,7 @@ TOPDIR+=/..
 cd $TOPDIR
 
 # Check if python and pip (3.6) is installed
+echo "Checking that python and pip 3.6 are installed..."
 INSTALL_PATH=`which python3.6`
 if [[ ! -f "$INSTALL_PATH" ]]; then
     echo "ERROR: python3.6 is not installed."
@@ -32,13 +33,17 @@ fi
 rm -fr $TOPDIR/venv
 
 # Create a virtual environment (venv)
+echo "Creating a python virtual environment..."
 python3.6 -m venv $TOPDIR/venv
 
 # Use the venv
 source $TOPDIR/venv/bin/activate
 
 # Install the python modules our app uses into our venv
+echo "Installing python modules..."
 pip3.6 install -r $TOPDIR/config/requirements.txt
 
 # Deactivate the venv
 deactivate
+echo "Done."
+
