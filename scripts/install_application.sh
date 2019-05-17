@@ -29,7 +29,7 @@ if [[ ! -f "$INSTALL_PATH" ]]; then
 fi
 
 # Remove any existing virtual environment
-sudo rm -fr $TOPDIR/venv
+rm -fr $TOPDIR/venv
 
 # Create a virtual environment (venv)
 python3.6 -m venv $TOPDIR/venv

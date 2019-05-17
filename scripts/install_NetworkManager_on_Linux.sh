@@ -38,16 +38,16 @@ check_os_version() {
 
 install_network_manager() {
     echo "Updating Debian package list..."
-    sudo apt-get update
+    apt-get update
 
     echo "Downloading NetworkManager..."
-    sudo apt-get install -y -d network-manager
+    apt-get install -y -d network-manager
 
     echo "Stopping dhcpcd..."
-    sudo systemctl stop dhcpcd
-    sudo systemctl disable dhcpcd
+    systemctl stop dhcpcd
+    systemctl disable dhcpcd
         
     echo "Installing NetworkManager..."
-    sudo apt-get install -y network-manager
-    sudo apt-get clean
+    apt-get install -y network-manager
+    apt-get clean
 }
