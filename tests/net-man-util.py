@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3.6
 #
 # Command-line tool to interact with NetworkManager. With this tool, you can
 # inspect various configuration items and (de-)activate connections.
