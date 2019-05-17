@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+*.log.*
+*.mypy_cache*
+*.cache*
+.pytest_cache/
+.idea
+htmlcov
+.pytest_cache/
+.coverage
+hostapd.conf
+rc.local
