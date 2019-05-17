@@ -31,3 +31,7 @@ The captive portal provides the option to select a WiFi SSID from a list with de
 
 When the network credentials have been entered, WiFi Connect will disable the access point and try to connect to the network. If the connection fails, it will enable the access point for another attempt. If it succeeds, the configuration will be saved by NetworkManager.
 
+***
+[See this for the development details and background.](docs/details.md)
+
+

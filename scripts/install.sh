@@ -4,7 +4,8 @@
 if [[ "$OSTYPE" != "linux"* ]]; then
     echo "ERROR: This application only runs on Linux."
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        echo "WARN: OSX is only supported for development/simulation."
+        echo "WARNING: OSX is only supported for development/simulation."
+        echo "NetworkManager and DBUS won't install or work on OSX."
     else
         exit 1
     fi
@@ -36,14 +37,18 @@ rm -fr $TOPDIR/venv
 echo "Creating a python virtual environment..."
 python3.6 -m venv $TOPDIR/venv
 
-# Use the venv
-source $TOPDIR/venv/bin/activate
+# Only install python modules on Linux (they are OS specific).
+if [[ "$OSTYPE" == "linux"* ]]; then
+    # Use the venv
+    source $TOPDIR/venv/bin/activate
 
-# Install the python modules our app uses into our venv
-echo "Installing python modules..."
-pip3.6 install -r $TOPDIR/config/requirements.txt
+    # Install the python modules our app uses into our venv
+    echo "Installing python modules..."
+    pip3.6 install -r $TOPDIR/config/requirements.txt
 
-# Deactivate the venv
-deactivate
+    # Deactivate the venv
+    deactivate
+fi
+
 echo "Done."
 
