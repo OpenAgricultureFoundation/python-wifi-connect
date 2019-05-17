@@ -1,4 +1,6 @@
 # Display all visible SSIDs
+# When connected to an AP, that is all that will be in the list.
+# When there is no active connection, this will show all visible APs.
 
 import NetworkManager
 

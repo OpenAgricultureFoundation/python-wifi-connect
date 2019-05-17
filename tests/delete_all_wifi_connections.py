@@ -16,3 +16,12 @@ def clear_connections():
 
 if __name__=="__main__":
     clear_connections()
+
+"""
+debugrob, we don't wan tto kill the resin wifi I think.  Modify above to only delete the "active" connection found by show_current_AP.py
+
+BalenaNetworkUtility: Deleting connection resin-wifi-01
+BalenaNetworkUtility: Deleting connection spanky
+(venv) 26 raspbian ~/python-wifi-connect/tests > [109187.454844] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[109187.479916] brcmfmac: power management disabled
+"""
