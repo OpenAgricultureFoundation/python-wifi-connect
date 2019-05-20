@@ -47,3 +47,4 @@ else:
 
 # And connect
 NetworkManager.NetworkManager.ActivateConnection(conn, dev, "/")
+

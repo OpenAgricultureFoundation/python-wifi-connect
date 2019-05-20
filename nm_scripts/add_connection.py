@@ -46,6 +46,7 @@ nmcli
 import NetworkManager
 import uuid
 
+#debugrob: use this format to get on MIT SECURE
 example_connection = {
      '802-11-wireless': {'mode': 'infrastructure',
                          'security': '802-11-wireless-security',
@@ -84,7 +85,10 @@ example_hidden_AP_connection = {
  'ipv6': {'method': 'auto'}
 }
 
-NetworkManager.Settings.AddConnection(example_MIT_open_connection)
+#conn = example_hidden_AP_connection
+conn = example_MIT_open_connection
+NetworkManager.Settings.AddConnection(conn)
+print(f"Added connection: {conn}")
 
 
 
