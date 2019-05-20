@@ -3,7 +3,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 from io import BytesIO
 
 # Defaults
-PORT = 5000
+PORT = 80
 UI_PATH = '../ui'
 SIMULATE = False
 
@@ -105,7 +105,9 @@ def main(port, ui_path, simulate):
     os.chdir(web_dir)
 
     # Host:Port our HTTP server listens on
-    server_address = ('localhost', port)
+#    server_address = ('localhost', port)
+#debugrob, add command line option and default for this:
+    server_address = ('192.168.42.1', port)
 
     # Custom request handler class (so we can pass in our own args)
     MyRequestHandlerClass = RequestHandlerClassFactory(simulate)

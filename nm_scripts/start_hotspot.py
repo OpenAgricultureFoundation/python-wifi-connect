@@ -58,7 +58,7 @@ hotspot = {
                 'id': connection_ID,
                 'interface-name': 'wlan0',
                 'type': '802-11-wireless',
-                'uuid': '8416b3ac-32fe-4d90-8d3b-e16d017d0f18'},
+                'uuid': str(uuid.uuid4())},
  'ipv4': {'address-data': [{'address': '192.168.42.1', 'prefix': 24}],
           'addresses': [['192.168.42.1', 24, '0.0.0.0']],
           'method': 'manual'},
@@ -75,17 +75,20 @@ conn = connections[connection_ID]
 
 # Find a suitable device
 ctype = conn.GetSettings()['connection']['type']
-    dtype = { '802-11-wireless': NetworkManager.NM_DEVICE_TYPE_WIFI 
-            }.get(ctype,ctype)
-    devices = NetworkManager.NetworkManager.GetDevices()
+dtype = {'802-11-wireless': NetworkManager.NM_DEVICE_TYPE_WIFI}.get(ctype,ctype)
+devices = NetworkManager.NetworkManager.GetDevices()
 
-    for dev in devices:
-        if dev.DeviceType == dtype and dev.State == NetworkManager.NM_DEVICE_STATE_DISCONNECTED:
-            break
-    else:
-        print("No suitable and available %s device found" % ctype)
-        sys.exit(1)
+for dev in devices:
+    if dev.DeviceType == dtype and dev.State == NetworkManager.NM_DEVICE_STATE_DISCONNECTED:
+        break
+else:
+    print("No suitable and available %s device found" % ctype)
+    sys.exit(1)
 
 # And connect
 NetworkManager.NetworkManager.ActivateConnection(conn, dev, "/")
 
+#debugrob: this is what wifi-connect, networkmanager module does (in rust)
+#NetworkManager.NetworkManager.AddAndActivateConnection(conn, dev, "/")
+
+#print(f"Activated connection.")
