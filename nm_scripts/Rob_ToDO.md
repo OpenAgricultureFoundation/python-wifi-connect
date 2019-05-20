@@ -1,5 +1,5 @@
 # Rob, this is your TODO list for the project
-- Start with writing python network manager scripts in the tests/ dir.
+- Start with writing python network manager scripts in the `nm_scripts/` dir.
 - Use [python-networkmanager/examples](https://github.com/seveas/python-networkmanager/tree/master/examples)
 
 ## Ref. Docs

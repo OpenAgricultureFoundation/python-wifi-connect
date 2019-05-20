@@ -1,17 +1,32 @@
 # Implementation details intended for developers.
 
+## How it works
+1. Use NetworkManager (NM, I'm referring to the python module that communicates over the DBUS API to the NetworkManager debian package) to see if there is an active wifi connection, if so we exit with nothing to do.
+1. Use NM to create a local access point.
+1. Start our HTTP server, which will use JS to ask for `/networks` where we use NM to get a list the list of local Access Points (AP).  We also add a place holder to the list for the user to supply the name of a hidden AP.
+1. When the user connects their machine to the AP we advertise, we act as a captured portal and display our UI (in the `ui/` dir) which is a form that allows the user to pick a local wifi and supply a password.
+1. The HTTP server process the form POST and uses NM to stop our AP and connect to the AP the user has selected.  If this fails we go back to step 2.
+1. If the device is successfully connected to an AP, we exit.
+
+
 ## Installation
 - You must run `scripts/install.sh` one time to verify your OS and our requirements (python3.6) before running this application.
 
-- See `scripts/optional_install_NetworkManager_on_Linux.sh` to install the debian package if you are doing your own thing.  It is 'optional' because we already have it in our docker container.
+- See `scripts/optional_install_NetworkManager_on_Linux.sh` to install the debian package if you are doing your own thing.  It is 'optional' for us (OpenAg) because we already have it in our docker container image.
+
+- Note: DBUS and NetworkManager (the python module and Linux package) only work on Linux.  I have developed this application on OSX, so there is a simulation mode that will supply a fake list of APs, mainly for UI development.  Under OSX you can't control any wifi settings.
 
 
-## Docs
+## References
 - This application uses the [python-networkmanager module](https://pypi.org/project/python-networkmanager/). 
 - Source for the [python-networkmanager module](https://github.com/seveas/python-networkmanager) on GitHub.
 - Documentation for the [python-networkmanager module](https://pythonhosted.org/python-networkmanager/).
 - The above python module is just an API that communicates over DBUS to the [debian NetworkManager package](https://wiki.debian.org/NetworkManager) which must be installed.
 - [DBUS NetworkManager API](https://developer.gnome.org/NetworkManager/1.2/spec.html)
+
+
+## Py NetworkManager
+See the `nm_scripts/` directory for the scripts I copied/modified to figure out how to use NM.  Once tested / grokked, this code will become part of the server that handles the user input.
 
 
 ## Why?

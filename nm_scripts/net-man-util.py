@@ -17,6 +17,7 @@ Actions:
   offline    - Deactivate all connections
   enable     - Enable specific connection types
   disable    - Disable specific connection types
+  dump       - Dump connection info
   info       - Information about a connection"""
 
 import datetime
