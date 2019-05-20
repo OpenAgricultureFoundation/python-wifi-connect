@@ -8,6 +8,8 @@ def clear_connections():
     # Delete the '802-11-wireless' connections
     for connection in connections:
         if connection.GetSettings()["connection"]["type"] == "802-11-wireless":
+            if connection.GetSettings()["connection"]["id"].startswith("resin-wifi"):
+                continue # don't kill the balena internal wifi
             print(
                 "BalenaNetworkUtility: Deleting connection "
                 + connection.GetSettings()["connection"]["id"]
@@ -18,10 +20,8 @@ if __name__=="__main__":
     clear_connections()
 
 """
-debugrob, we don't wan tto kill the resin wifi I think.  Modify above to only delete the "active" connection found by show_current_AP.py
+We don't want to kill the resin wifi I think.  
 
 BalenaNetworkUtility: Deleting connection resin-wifi-01
 BalenaNetworkUtility: Deleting connection spanky
-(venv) 26 raspbian ~/python-wifi-connect/tests > [109187.454844] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
-[109187.479916] brcmfmac: power management disabled
 """
