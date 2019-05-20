@@ -46,15 +46,16 @@ hotspot = {
 
 import NetworkManager
 import uuid
-import os
+import os, sys
 
 
+connection_ID = 'PFC_EDU'
 hotspot = {
  '802-11-wireless': {'band': 'bg',
                      'mode': 'ap',
                      'ssid': 'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT')},
  'connection': {'autoconnect': False,
-                'id': 'PFC_EDU',
+                'id': connection_ID,
                 'interface-name': 'wlan0',
                 'type': '802-11-wireless',
                 'uuid': '8416b3ac-32fe-4d90-8d3b-e16d017d0f18'},
@@ -67,4 +68,24 @@ hotspot = {
 NetworkManager.Settings.AddConnection(hotspot)
 print(f"Added connection: {hotspot}")
 
+# Now find this connection and its device
+connections = NetworkManager.Settings.ListConnections()
+connections = dict([(x.GetSettings()['connection']['id'], x) for x in connections])
+conn = connections[connection_ID]
+
+# Find a suitable device
+ctype = conn.GetSettings()['connection']['type']
+    dtype = { '802-11-wireless': NetworkManager.NM_DEVICE_TYPE_WIFI 
+            }.get(ctype,ctype)
+    devices = NetworkManager.NetworkManager.GetDevices()
+
+    for dev in devices:
+        if dev.DeviceType == dtype and dev.State == NetworkManager.NM_DEVICE_STATE_DISCONNECTED:
+            break
+    else:
+        print("No suitable and available %s device found" % ctype)
+        sys.exit(1)
+
+# And connect
+NetworkManager.NetworkManager.ActivateConnection(conn, dev, "/")
 
