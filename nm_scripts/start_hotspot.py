@@ -13,8 +13,10 @@ nmcli connection up hotspot
 
 # In our container, use NM to dump the connection (and clean it up):
 # ./net-man-util.py dump hotspot
-{'802-11-wireless': {'mode': 'ap',
-                     'ssid': 'PFC_EDU'},
+# >> delete this if below works.
+hotspot = {
+ '802-11-wireless': {'mode': 'ap',
+                     'ssid': 'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT')},
  'connection': {'id': 'hotspot',
                 'interface-name': 'wlan0',
                 'type': '802-11-wireless',
@@ -22,20 +24,43 @@ nmcli connection up hotspot
  'ipv4': {'method': 'auto'},
  'ipv6': {'method': 'auto'}
 }
+
+#debugrob: rust wifi-connect starts hostspot on 192.168.42.1:80
+#debugrob: run: cd /usr/src/app && ./wifi-connect -s debugrob
+# ./net-man-util.py dump debugrob
+
+hotspot = {
+ '802-11-wireless': {'band': 'bg',
+                     'mode': 'ap',
+                     'ssid': 'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT')},
+ 'connection': {'autoconnect': False,
+                'id': 'PFC_EDU',
+                'interface-name': 'wlan0',
+                'type': '802-11-wireless',
+                'uuid': '8416b3ac-32fe-4d90-8d3b-e16d017d0f18'},
+ 'ipv4': {'address-data': [{'address': '192.168.42.1', 'prefix': 24}],
+          'addresses': [['192.168.42.1', 24, '0.0.0.0']],
+          'method': 'manual'},
+ 'ipv6': {'method': 'auto'}
 """
 
 import NetworkManager
 import uuid
+import os
 
-#debugrob: use this format to get on MIT SECURE
+
 hotspot = {
- '802-11-wireless': {'mode': 'ap',
-                     'ssid': 'PFC_EDU'},
- 'connection': {'id': 'hotspot',
+ '802-11-wireless': {'band': 'bg',
+                     'mode': 'ap',
+                     'ssid': 'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT')},
+ 'connection': {'autoconnect': False,
+                'id': 'PFC_EDU',
                 'interface-name': 'wlan0',
                 'type': '802-11-wireless',
-                'uuid': str(uuid.uuid4())},
- 'ipv4': {'method': 'auto'},
+                'uuid': '8416b3ac-32fe-4d90-8d3b-e16d017d0f18'},
+ 'ipv4': {'address-data': [{'address': '192.168.42.1', 'prefix': 24}],
+          'addresses': [['192.168.42.1', 24, '0.0.0.0']],
+          'method': 'manual'},
  'ipv6': {'method': 'auto'}
 }
 
