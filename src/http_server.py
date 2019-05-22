@@ -34,6 +34,9 @@ def RequestHandlerClassFactory(simulate):
         # See if this is a specific request, otherwise let the server handle it.
         def do_GET(self):
 
+            #debugrob do a redirect to "http://<gateway>/" if path is???
+            print(f'GET {self.path}')
+
             # Handle a REST API request to return the list of SSIDs
             if '/networks' == self.path:
                 self.send_response(200)
