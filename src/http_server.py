@@ -1,4 +1,4 @@
-import os, getopt, sys, json
+import os, getopt, sys, json, atexit
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from io import BytesIO
 
@@ -11,6 +11,14 @@ ADDRESS = '192.168.42.1'
 PORT = 80
 UI_PATH = '../ui'
 SIMULATE = False
+
+
+#------------------------------------------------------------------------------
+# called at exit
+def cleanup():
+    print("cleanup() called at exit.")
+    dnsmasq.stop()
+    httpd.server_close()
 
 
 #------------------------------------------------------------------------------
@@ -160,6 +168,8 @@ def string_to_int(s, default):
 #------------------------------------------------------------------------------
 # Entry point and command line argument processing.
 if __name__ == "__main__":
+    atexit.register(cleanup)
+
     address = ADDRESS
     port = PORT
     ui_path = UI_PATH

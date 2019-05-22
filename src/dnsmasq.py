@@ -20,15 +20,15 @@ def stop():
 def start():
     path = "/usr/sbin/dnsmasq"
     args = [path]
-    args.append("--address=/#/{DEFAULT_GATEWAY}")
-    args.append("--dhcp-range={DEFAULT_DHCP_RANGE}")
-    args.append("--dhcp-option=option:router,{DEFAULT_GATEWAY}")
-    args.append("--interface={DEFAULT_INTERFACE}")
-    args.append("--keep-in-foreground")
-    args.append("--bind-interfaces")
-    args.append("--except-interface=lo")
-    args.append("--conf-file")
-    args.append("--no-hosts" )
+    args.append(f"--address=/#/{DEFAULT_GATEWAY}")
+    args.append(f"--dhcp-range={DEFAULT_DHCP_RANGE}")
+    args.append(f"--dhcp-option=option:router,{DEFAULT_GATEWAY}")
+    args.append(f"--interface={DEFAULT_INTERFACE}")
+    args.append(f"--keep-in-foreground")
+    args.append(f"--bind-interfaces")
+    args.append(f"--except-interface=lo")
+    args.append(f"--conf-file")
+    args.append(f"--no-hosts" )
 
     # run dnsmasq in the background and save a reference to the object
     saved_proc = subprocess.Popen(args)
