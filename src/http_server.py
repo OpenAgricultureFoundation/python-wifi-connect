@@ -22,7 +22,7 @@ class MyHTTPServer(HTTPServer):
 # A custom http request handler class factory.
 # Handle the GET and POST requests from the UI form and JS.
 # The class factory allows us to pass custom arguments to the handler.
-def RequestHandlerClassFactory(simulate):
+def RequestHandlerClassFactory(simulate, address):
 
     class MyHTTPReqHandler(SimpleHTTPRequestHandler):
 
@@ -30,6 +30,7 @@ def RequestHandlerClassFactory(simulate):
             # We must set our custom class properties first, since __init__() of
             # our super class will call do_GET().
             self.simulate = simulate
+            self.address = address
             super(MyHTTPReqHandler, self).__init__(*args, **kwargs)
 
         # See if this is a specific request, otherwise let the server handle it.
@@ -43,7 +44,8 @@ def RequestHandlerClassFactory(simulate):
             if '/hotspot-detect.html' == self.path:
                 self.send_response(301) # redirect
 #debugrob, does this open the captured portal?
-                new_path = f'http://{gateway}/'
+                new_path = f'http://{self.address}/'
+                print(f'redirecting to {new_path}')
                 self.send_header('Location', new_path)
                 self.end_headers()
 
@@ -121,7 +123,7 @@ def main(address, port, ui_path, simulate):
     server_address = (address, port)
 
     # Custom request handler class (so we can pass in our own args)
-    MyRequestHandlerClass = RequestHandlerClassFactory(simulate)
+    MyRequestHandlerClass = RequestHandlerClassFactory(simulate, address)
 
     # Start an HTTP server to serve the content in the ui dir and handle the 
     # POST request in the handler class.
