@@ -18,7 +18,6 @@ SIMULATE = False
 def cleanup():
     print("cleanup() called at exit.")
     dnsmasq.stop()
-    httpd.server_close()
 
 
 #------------------------------------------------------------------------------

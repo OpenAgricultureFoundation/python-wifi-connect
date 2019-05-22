@@ -60,13 +60,13 @@ def start():
 
     # And connect
     NetworkManager.NetworkManager.ActivateConnection(conn, dev, "/")
-    print(f"Activated connection={conn}, dev={dev}.")
+    print(f"Activated connection={connection_ID}.")
 
     # Wait for ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
     print(f'Waiting for connection to become active...')
     loop_count = 0
     while dev.State != NetworkManager.NM_DEVICE_STATE_ACTIVATED:
-        print(f'dev.State={dev.State}')
+        #print(f'dev.State={dev.State}')
         time.sleep(2)
         loop_count += 1
         if loop_count > 100:
