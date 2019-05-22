@@ -1,8 +1,7 @@
 # Start a local hotspot using NetworkManager.
 
 import NetworkManager
-import uuid
-import os, sys
+import uuid, os, sys, time
 
 
 #------------------------------------------------------------------------------
@@ -62,6 +61,19 @@ def start():
     # And connect
     NetworkManager.NetworkManager.ActivateConnection(conn, dev, "/")
     print(f"Activated connection={conn}, dev={dev}.")
-    return True
+
+    # Wait for ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
+    print(f'Waiting for connection to become active...')
+    loop_count = 0
+    while dev.State != NetworkManager.NM_DEVICE_STATE_ACTIVATED:
+        print(f'dev.State={dev.State}')
+        time.sleep(2)
+        loop_count += 1
+        if loop_count > 100:
+            break
+
+    if dev.State == NetworkManager.NM_DEVICE_STATE_ACTIVATED:
+        return True
+    return False
 
 

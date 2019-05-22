@@ -1,6 +1,6 @@
 # start / stop the dnsmasq process
 
-import subprocess
+import subprocess, time
 
 DEFAULT_GATEWAY="192.168.42.1"
 DEFAULT_DHCP_RANGE="192.168.42.2,192.168.42.254"
@@ -29,8 +29,13 @@ def start():
     args.append("--except-interface=lo")
     args.append("--conf-file")
     args.append("--no-hosts" )
-    # run dnsmasq in the background
+
+    # run dnsmasq in the background and save a reference to the object
     saved_proc = subprocess.Popen(args)
+
+    # give a few seconds for the proc to start
+    time.sleep(2)
+
     print(f'started {path}, PID={saved_proc.pid}')
 
 

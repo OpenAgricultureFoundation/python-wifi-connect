@@ -116,7 +116,9 @@ def main(address, port, ui_path, simulate):
 
     # Remove all existing wifi connections and start the hotspot
     hotspot.delete_all_wifi_connections()
-    hotspot.start()
+    if not hotspot.start():
+        print('Error starting hotspot, exiting.')
+        sys.exit(1)
 
     # Start dnsmasq (to advertise us as a router so captured portal pops up
     # on the users machine to vend our UI in our http server)
