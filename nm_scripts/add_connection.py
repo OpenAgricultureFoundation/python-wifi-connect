@@ -85,10 +85,10 @@ example_hidden_AP_connection = {
  'ipv6': {'method': 'auto'}
 }
 
-#conn = example_hidden_AP_connection
-conn = example_MIT_open_connection
-NetworkManager.Settings.AddConnection(conn)
-print(f"Added connection: {conn}")
+conn = example_hidden_AP_connection
+#conn = example_MIT_open_connection
+ret = NetworkManager.Settings.AddConnection(conn)
+print(f"Added connection={conn} ret={ret}")
 
 
 

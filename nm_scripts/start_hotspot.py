@@ -87,8 +87,8 @@ else:
 
 # And connect
 NetworkManager.NetworkManager.ActivateConnection(conn, dev, "/")
+print(f"Activated connection={conn}, dev={dev}.")
 
 #debugrob: this is what wifi-connect, networkmanager module does (in rust)
 #NetworkManager.NetworkManager.AddAndActivateConnection(conn, dev, "/")
 
-#print(f"Activated connection.")
