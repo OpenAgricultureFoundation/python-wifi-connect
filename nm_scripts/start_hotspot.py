@@ -13,21 +13,9 @@ nmcli connection up hotspot
 
 # In our container, use NM to dump the connection (and clean it up):
 # ./net-man-util.py dump hotspot
-# >> delete this if below works.
-hotspot = {
- '802-11-wireless': {'mode': 'ap',
-                     'ssid': 'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT')},
- 'connection': {'id': 'hotspot',
-                'interface-name': 'wlan0',
-                'type': '802-11-wireless',
-                'uuid': str(uuid.uuid4())},
- 'ipv4': {'method': 'auto'},
- 'ipv6': {'method': 'auto'}
-}
-
-#debugrob: rust wifi-connect starts hostspot on 192.168.42.1:80
-#debugrob: run: cd /usr/src/app && ./wifi-connect -s debugrob
-# ./net-man-util.py dump debugrob
+#
+# Also check what the rust wifi-connect does
+# cd /usr/src/app && ./wifi-connect -s hotspot
 
 hotspot = {
  '802-11-wireless': {'band': 'bg',
@@ -79,7 +67,8 @@ dtype = {'802-11-wireless': NetworkManager.NM_DEVICE_TYPE_WIFI}.get(ctype,ctype)
 devices = NetworkManager.NetworkManager.GetDevices()
 
 for dev in devices:
-    if dev.DeviceType == dtype and dev.State == NetworkManager.NM_DEVICE_STATE_DISCONNECTED:
+    #if dev.DeviceType == dtype and dev.State == NetworkManager.NM_DEVICE_STATE_DISCONNECTED:
+    if dev.DeviceType == dtype:
         break
 else:
     print("No suitable and available %s device found" % ctype)
@@ -89,6 +78,4 @@ else:
 NetworkManager.NetworkManager.ActivateConnection(conn, dev, "/")
 print(f"Activated connection={conn}, dev={dev}.")
 
-#debugrob: this is what wifi-connect, networkmanager module does (in rust)
-#NetworkManager.NetworkManager.AddAndActivateConnection(conn, dev, "/")
 

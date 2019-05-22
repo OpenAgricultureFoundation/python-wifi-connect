@@ -2,6 +2,10 @@ import os, getopt, sys, json
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from io import BytesIO
 
+# Local modules
+import hotspot
+import dnsmasq
+
 # Defaults
 ADDRESS = '192.168.42.1'
 PORT = 80
@@ -43,7 +47,6 @@ def RequestHandlerClassFactory(simulate, address):
             # captured portal to show up.
             if '/hotspot-detect.html' == self.path:
                 self.send_response(301) # redirect
-#debugrob, does this open the captured portal?
                 new_path = f'http://{self.address}/'
                 print(f'redirecting to {new_path}')
                 self.send_header('Location', new_path)
@@ -108,8 +111,16 @@ def RequestHandlerClassFactory(simulate, address):
 
 
 #------------------------------------------------------------------------------
-# Run the HTTP server.
+# Create the hotspot, start dnsmasq, start the HTTP server.
 def main(address, port, ui_path, simulate):
+
+    # Remove all existing wifi connections and start the hotspot
+    hotspot.delete_all_wifi_connections()
+    hotspot.start()
+
+    # Start dnsmasq (to advertise us as a router so captured portal pops up
+    # on the users machine to vend our UI in our http server)
+    dnsmasq.start()
 
     # Find the ui directory which is up one from where this file is located.
     web_dir = os.path.join(os.path.dirname(__file__), ui_path)
@@ -131,6 +142,7 @@ def main(address, port, ui_path, simulate):
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
+        dnsmasq.stop()
         httpd.server_close()
 
 

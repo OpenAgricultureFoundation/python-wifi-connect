@@ -39,10 +39,7 @@ for dev in devices:
 #    if dev.DeviceType == dtype and dev.State == NetworkManager.NM_DEVICE_STATE_DISCONNECTED:
     if dev.DeviceType == dtype:
         break
-    else:
-        dev = None
-
-if dev == None:
+else:
     print("No suitable and available %s device found" % ctype)
     sys.exit(1)
 
