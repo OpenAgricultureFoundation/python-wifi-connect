@@ -19,7 +19,7 @@ def stop():
 
 def start():
     path = "/usr/sbin/dnsmasq"
-    args = [path}
+    args = [path]
     args.append("--address=/#/{DEFAULT_GATEWAY}")
     args.append("--dhcp-range={DEFAULT_DHCP_RANGE}")
     args.append("--dhcp-option=option:router,{DEFAULT_GATEWAY}")
