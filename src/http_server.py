@@ -3,6 +3,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 from io import BytesIO
 
 # Defaults
+ADDRESS = '192.168.42.1'
 PORT = 80
 UI_PATH = '../ui'
 SIMULATE = False
@@ -34,8 +35,17 @@ def RequestHandlerClassFactory(simulate):
         # See if this is a specific request, otherwise let the server handle it.
         def do_GET(self):
 
-            #debugrob do a redirect to "http://<gateway>/" if path is???
-            print(f'GET {self.path}')
+            print(f'do_GET {self.path}')
+
+            # Handle the hotspot starting and a computer connecting to it,
+            # we have to return a redirect to the gateway to get the 
+            # captured portal to show up.
+            if '/hotspot-detect.html' == self.path:
+                self.send_response(301) # redirect
+#debugrob, does this open the captured portal?
+                new_path = f'http://{gateway}/'
+                self.send_header('Location', new_path)
+                self.end_headers()
 
             # Handle a REST API request to return the list of SSIDs
             if '/networks' == self.path:
@@ -97,20 +107,18 @@ def RequestHandlerClassFactory(simulate):
 
 #------------------------------------------------------------------------------
 # Run the HTTP server.
-def main(port, ui_path, simulate):
+def main(address, port, ui_path, simulate):
 
     # Find the ui directory which is up one from where this file is located.
     web_dir = os.path.join(os.path.dirname(__file__), ui_path)
-    print(f'HTTP serving directory: {web_dir}')
+    print(f'HTTP serving directory: {web_dir} on {address}:{port}')
 
     # Change to this directory so the HTTPServer returns the index.html in it 
     # by default when it gets a GET.
     os.chdir(web_dir)
 
     # Host:Port our HTTP server listens on
-#    server_address = ('localhost', port)
-#debugrob, add command line option and default for this:
-    server_address = ('192.168.42.1', port)
+    server_address = (address, port)
 
     # Custom request handler class (so we can pass in our own args)
     MyRequestHandlerClass = RequestHandlerClassFactory(simulate)
@@ -136,12 +144,14 @@ def string_to_int(s, default):
 #------------------------------------------------------------------------------
 # Entry point and command line argument processing.
 if __name__ == "__main__":
+    address = ADDRESS
     port = PORT
     ui_path = UI_PATH
     simulate = SIMULATE
 
     usage = ''\
 f'Command line args: \n'\
+f'  -a <HTTP server address>    Default: {address} \n'\
 f'  -p <HTTP server port>       Default: {port} \n'\
 f'  -u <UI directory to serve>  Default: "{ui_path}" \n'\
 f'  -s Simulate NetworkManager  Default: {simulate} \n'\
@@ -161,15 +171,19 @@ f'  -h Show help.\n'
         elif opt in ("-s"):
             simulate = True
 
+        elif opt in ("-a"):
+            address = arg
+
         elif opt in ("-p"):
             port = string_to_int(arg, port)
 
         elif opt in ("-u"):
             ui_path = arg
 
+    print(f'Address={address}')
     print(f'Port={port}')
     print(f'UI path={ui_path}')
     print(f'Simulate={simulate}')
-    main(port, ui_path, simulate)
+    main(address, port, ui_path, simulate)
 
 
