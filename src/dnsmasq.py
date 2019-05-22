@@ -18,6 +18,17 @@ def stop():
 
 
 def start():
+    # first kill any existing dnsmasq
+    ps = subprocess.Popen("ps -e | grep ' dnsmasq' | cut -c 1-6", shell=True, stdout=subprocess.PIPE)
+    pid = ps.stdout.read()
+    ps.stdout.close()
+    ps.wait()
+    pid = pid.strip()
+    if 0 < len(pid):
+        print(f"Killing dnsmasq PID '{pid}'")
+        ps = subprocess.Popen(f"kill -9 {pid}", shell=True)
+        ps.wait()
+
     path = "/usr/sbin/dnsmasq"
     args = [path]
     args.append(f"--address=/#/{DEFAULT_GATEWAY}")
@@ -32,6 +43,7 @@ def start():
 
     # run dnsmasq in the background and save a reference to the object
     saved_proc = subprocess.Popen(args)
+    saved_proc.wait()
 
     # give a few seconds for the proc to start
     time.sleep(2)
