@@ -2,11 +2,12 @@
 
 ## How it works
 1. Use NetworkManager (NM, I'm referring to the python module that communicates over the DBUS API to the NetworkManager debian package) to see if there is an active wifi connection, if so we exit with nothing to do.
+1. Start the [dnsmasq](https://en.wikipedia.org/wiki/Dnsmasq) utility to forward DNS, run a DHCP server and advertise us as a router.
 1. Use NM to create a local access point.
 1. Start our HTTP server, which will use JS to ask for `/networks` where we use NM to get a list the list of local Access Points (AP).  We also add a place holder to the list for the user to supply the name of a hidden AP.
 1. When the user connects their machine to the AP we advertise, we act as a captured portal and display our UI (in the `ui/` dir) which is a form that allows the user to pick a local wifi and supply a password.
 1. The HTTP server process the form POST and uses NM to stop our AP and connect to the AP the user has selected.  If this fails we go back to step 2.
-1. If the device is successfully connected to an AP, we exit.
+1. If the device is successfully connected to an AP, we stop dnsmasq and exit.
 
 
 ## Installation
