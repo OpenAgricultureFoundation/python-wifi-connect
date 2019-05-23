@@ -122,15 +122,15 @@ def RequestHandlerClassFactory(simulate, address, ssids):
                 print(f'Error: POST is missing {FORM_SSID} field.')
                 return
 
-            ssid = fields[FORM_SSID]
+            ssid = fields[FORM_SSID][0]
             password = None
             username = None
             if FORM_HIDDEN_SSID in fields: 
-                ssid = fields[FORM_HIDDEN_SSID] # override with hidden name
+                ssid = fields[FORM_HIDDEN_SSID][0] # override with hidden name
             if FORM_USERNAME in fields: 
-                username = fields[FORM_USERNAME] 
+                username = fields[FORM_USERNAME][0] 
             if FORM_PASSWORD in fields: 
-                password = fields[FORM_PASSWORD] 
+                password = fields[FORM_PASSWORD][0] 
 
             # Look up the ssid in the list we sent, to find out its security
             # type for the new connection we have to make
