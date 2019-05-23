@@ -170,128 +170,148 @@ def connect_to_AP(conn_type=None, conn_name=GENERIC_CONNECTION_NAME, \
         print(f'connect_to_AP() Error: Missing args conn_type or ssid')
         return False
 
-    # This is the hotspot that we turn on, on the RPI so we can show our
-    # captured portal to let the user select an AP and provide credentials.
-    hotspot_dict = {
-        '802-11-wireless': {'band': 'bg',
-                            'mode': 'ap',
-                            'ssid': ssid},
-        'connection': {'autoconnect': False,
-                       'id': conn_name,
-                       'interface-name': 'wlan0',
-                       'type': '802-11-wireless',
-                       'uuid': str(uuid.uuid4())},
-        'ipv4': {'address-data': [{'address': '192.168.42.1', 'prefix': 24}],
-                 'addresses': [['192.168.42.1', 24, '0.0.0.0']],
-                 'method': 'manual'},
-        'ipv6': {'method': 'auto'}
-    }
+    try:
+        # This is the hotspot that we turn on, on the RPI so we can show our
+        # captured portal to let the user select an AP and provide credentials.
+        hotspot_dict = {
+            '802-11-wireless': {'band': 'bg',
+                                'mode': 'ap',
+                                'ssid': ssid},
+            'connection': {'autoconnect': False,
+                           'id': conn_name,
+                           'interface-name': 'wlan0',
+                           'type': '802-11-wireless',
+                           'uuid': str(uuid.uuid4())},
+            'ipv4': {'address-data': 
+                        [{'address': '192.168.42.1', 'prefix': 24}],
+                     'addresses': [['192.168.42.1', 24, '0.0.0.0']],
+                     'method': 'manual'},
+            'ipv6': {'method': 'auto'}
+        }
 
 #debugrob: is this realy a generic ENTERPRISE config, need another?
 #debugrob: how do we handle connecting to a captured portal?
 
-    # This is what we use for "MIT SECURE" network.
-    enterprise_dict = {
-        '802-11-wireless': {'mode': 'infrastructure',
-                            'security': '802-11-wireless-security',
-                            'ssid': ssid},
-        '802-11-wireless-security': {'auth-alg': 'open', 'key-mgmt': 'wpa-eap'},
-        '802-1x': {'eap': ['peap'],
-                   'identity': username,
-                   'password': password,
-                   'phase2-auth': 'mschapv2'},
-        'connection': {'id': conn_name,
-                       'type': '802-11-wireless',
-                       'uuid': str(uuid.uuid4())},
-        'ipv4': {'method': 'auto'},
-        'ipv6': {'method': 'auto'}
-    }
+        # This is what we use for "MIT SECURE" network.
+        enterprise_dict = {
+            '802-11-wireless': {'mode': 'infrastructure',
+                                'security': '802-11-wireless-security',
+                                'ssid': ssid},
+            '802-11-wireless-security': 
+                {'auth-alg': 'open', 'key-mgmt': 'wpa-eap'},
+            '802-1x': {'eap': ['peap'],
+                       'identity': username,
+                       'password': password,
+                       'phase2-auth': 'mschapv2'},
+            'connection': {'id': conn_name,
+                           'type': '802-11-wireless',
+                           'uuid': str(uuid.uuid4())},
+            'ipv4': {'method': 'auto'},
+            'ipv6': {'method': 'auto'}
+        }
 
-    # No auth, 'open' connection.
-    none_dict = {
-        '802-11-wireless': {'mode': 'infrastructure',
-                            'ssid': ssid},
-        'connection': {'id': conn_name,
-                       'type': '802-11-wireless',
-                       'uuid': str(uuid.uuid4())},
-        'ipv4': {'method': 'auto'},
-        'ipv6': {'method': 'auto'}
-    }
+        # No auth, 'open' connection.
+        none_dict = {
+            '802-11-wireless': {'mode': 'infrastructure',
+                                'ssid': ssid},
+            'connection': {'id': conn_name,
+                           'type': '802-11-wireless',
+                           'uuid': str(uuid.uuid4())},
+            'ipv4': {'method': 'auto'},
+            'ipv6': {'method': 'auto'}
+        }
+        """
+        debugrob this happens when I pick 'xfinitywifi' from home, it advertises as no security.
 
-    # Hidden, WEP, WPA, WPA2, password required.
-    passwd_dict = {
-        '802-11-wireless': {'mode': 'infrastructure',
-                            'security': '802-11-wireless-security',
-                            'ssid': ssid},
-        '802-11-wireless-security': {'key-mgmt': 'wpa-psk', 'psk': password},
-        'connection': {'id': conn_name,
-                       'type': '802-11-wireless',
-                       'uuid': str(uuid.uuid4())},
-        'ipv4': {'method': 'auto'},
-        'ipv6': {'method': 'auto'}
-    }
+POST received: {'ssid': ['xfinitywifi']}
+[250414.056802] brcmfmac: brcmf_vif_set_mgmt_ie: vndr ie set error : -30
+[250414.069637] brcmfmac: brcmf_vif_set_mgmt_ie: vndr ie set error : -30
+[250414.682991] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[250414.693524] brcmfmac: power management disabled
+[250415.306717] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[250415.317360] brcmfmac: power management disabled
+debugrob new connection {'802-11-wireless': {'mode': 'infrastructure', 'security': '802-11-wireless-security', 'ssid': 'xfinitywifi'}, '802-11-wireless-security': {'key-mgmt': 'wpa-psk', 'psk': None}, 'connection': {'id': 'python-wifi-connect', 'type': '802-11-wireless', 'uuid': '38f3ec7c-b64f-4d95-8fa3-42b818935014'}, 'ipv4': {'method': 'auto'}, 'ipv6': {'method': 'auto'}} type=WEP/WPA/WPA2
+ERROR:dbus.connection:Unable to set arguments ({'802-11-wireless': {'mode': 'infrastructure', 'security': '802-11-wireless-security', 'ssid': [dbus.Byte(120), dbus.Byte(102), dbus.Byte(105), dbus.Byte(110), dbus.Byte(105), dbus.Byte(116), dbus.Byte(121), dbus.Byte(119), dbus.Byte(105), dbus.Byte(102), dbus.Byte(105)]}, '802-11-wireless-security': {'key-mgmt': 'wpa-psk', 'psk': None}, 'connection': {'id': 'python-wifi-connect', 'type': '802-11-wireless', 'uuid': '38f3ec7c-b64f-4d95-8fa3-42b818935014'}, 'ipv4': {'method': 'auto'}, 'ipv6': {'method': 'auto'}},) according to signature 'a{sa{sv}}': <class 'TypeError'>: Don't know which D-Bus type to use to encode type "NoneType"
+        """
 
-    conn_dict = None
-    conn_str = ''
-    if conn_type == CONN_TYPE_HOTSPOT:
-        conn_dict = hotspot_dict
-        conn_str = 'HOTSPOT'
+        # Hidden, WEP, WPA, WPA2, password required.
+        passwd_dict = {
+            '802-11-wireless': {'mode': 'infrastructure',
+                                'security': '802-11-wireless-security',
+                                'ssid': ssid},
+            '802-11-wireless-security': 
+                {'key-mgmt': 'wpa-psk', 'psk': password},
+            'connection': {'id': conn_name,
+                        'type': '802-11-wireless',
+                        'uuid': str(uuid.uuid4())},
+            'ipv4': {'method': 'auto'},
+            'ipv6': {'method': 'auto'}
+        }
 
-    if conn_type == CONN_TYPE_SEC_NONE:
-        conn_dict = none_dict 
-        conn_str = 'OPEN'
+        conn_dict = None
+        conn_str = ''
+        if conn_type == CONN_TYPE_HOTSPOT:
+            conn_dict = hotspot_dict
+            conn_str = 'HOTSPOT'
 
-    if conn_type == CONN_TYPE_SEC_PASSWORD:
-        conn_dict = passwd_dict 
-        conn_str = 'WEP/WPA/WPA2'
+        if conn_type == CONN_TYPE_SEC_NONE:
+            conn_dict = none_dict 
+            conn_str = 'OPEN'
 
-    if conn_type == CONN_TYPE_SEC_ENTERPRISE:
-        conn_dict = enterprise_dict 
-        conn_str = 'ENTERPRISE'
+        if conn_type == CONN_TYPE_SEC_PASSWORD:
+            conn_dict = passwd_dict 
+            conn_str = 'WEP/WPA/WPA2'
 
-    if conn_dict is None:
-        print(f'connect_to_AP() Error: Invalid conn_type="{conn_type}"')
-        return False
+        if conn_type == CONN_TYPE_SEC_ENTERPRISE:
+            conn_dict = enterprise_dict 
+            conn_str = 'ENTERPRISE'
 
-    print(f"debugrob new connection {conn_dict} type={conn_str}")
+        if conn_dict is None:
+            print(f'connect_to_AP() Error: Invalid conn_type="{conn_type}"')
+            return False
 
-    NetworkManager.Settings.AddConnection(conn_dict)
-    print(f"Added connection {conn_name} of type {conn_str}")
+        print(f"debugrob new connection {conn_dict} type={conn_str}")
 
-    # Now find this connection and its device
-    connections = NetworkManager.Settings.ListConnections()
-    connections = dict([(x.GetSettings()['connection']['id'], x) for x in connections])
-    conn = connections[conn_name]
+        NetworkManager.Settings.AddConnection(conn_dict)
+        print(f"Added connection {conn_name} of type {conn_str}")
 
-    # Find a suitable device
-    ctype = conn.GetSettings()['connection']['type']
-    dtype = {'802-11-wireless': NetworkManager.NM_DEVICE_TYPE_WIFI}.get(ctype,ctype)
-    devices = NetworkManager.NetworkManager.GetDevices()
+        # Now find this connection and its device
+        connections = NetworkManager.Settings.ListConnections()
+        connections = dict([(x.GetSettings()['connection']['id'], x) for x in connections])
+        conn = connections[conn_name]
 
-    for dev in devices:
-        if dev.DeviceType == dtype:
-            break
-    else:
-        print(f"connect_to_AP() Error: No suitable and available {ctype} device found.")
-        return False
+        # Find a suitable device
+        ctype = conn.GetSettings()['connection']['type']
+        dtype = {'802-11-wireless': NetworkManager.NM_DEVICE_TYPE_WIFI}.get(ctype,ctype)
+        devices = NetworkManager.NetworkManager.GetDevices()
 
-    # And connect
-    NetworkManager.NetworkManager.ActivateConnection(conn, dev, "/")
-    print(f"Activated connection={conn_name}.")
+        for dev in devices:
+            if dev.DeviceType == dtype:
+                break
+        else:
+            print(f"connect_to_AP() Error: No suitable and available {ctype} device found.")
+            return False
 
-    # Wait for ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-    print(f'Waiting for connection to become active...')
-    loop_count = 0
-    while dev.State != NetworkManager.NM_DEVICE_STATE_ACTIVATED:
-        #print(f'dev.State={dev.State}')
-        time.sleep(2)
-        loop_count += 1
-        if loop_count > 100:
-            break
+        # And connect
+        NetworkManager.NetworkManager.ActivateConnection(conn, dev, "/")
+        print(f"Activated connection={conn_name}.")
 
-    if dev.State == NetworkManager.NM_DEVICE_STATE_ACTIVATED:
-        print(f'Connection {conn_name} is live.')
-        return True
+        # Wait for ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
+        print(f'Waiting for connection to become active...')
+        loop_count = 0
+        while dev.State != NetworkManager.NM_DEVICE_STATE_ACTIVATED:
+            #print(f'dev.State={dev.State}')
+            time.sleep(2)
+            loop_count += 1
+            if loop_count > 100:
+                break
+
+        if dev.State == NetworkManager.NM_DEVICE_STATE_ACTIVATED:
+            print(f'Connection {conn_name} is live.')
+            return True
+
+    except Exception as e:
+        print(f'Connection error {e}')
 
     print(f'Connection {conn_name} failed.')
     return False

@@ -166,7 +166,8 @@ def RequestHandlerClassFactory(simulate, address, ssids):
                 sys.exit()
             else:
                 print(f'debugrob, how to restart after AP connection fail?')
-                pass
+                if not self.simulate:
+                    netman.start_hotspot() 
 #debugrob: if connection to new AP fails, start hotspot and start over.
 
     return  MyHTTPReqHandler # the class our factory just created.
