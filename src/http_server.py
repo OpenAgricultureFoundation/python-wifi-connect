@@ -152,15 +152,16 @@ def RequestHandlerClassFactory(simulate, address, ssids):
 
             # Connect to the user's selected AP
             success = netman.connect_to_AP(conn_type=conn_type, ssid=ssid, \
-                    username=username, password=password):
+                    username=username, password=password)
 
-            if success
+            if success:
                 response.write(b'OK\n')
             else:
                 response.write(b'ERROR\n')
             self.wfile.write(response.getvalue())
 
-            if success
+            # Handle success or failure of the new connection
+            if success:
                 print(f'Connected!  Exiting app.')
                 sys.exit()
             else:
