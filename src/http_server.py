@@ -2,7 +2,7 @@
 
 import os, getopt, sys, json, atexit
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import parse_qs
 from io import BytesIO
 
 # Local modules
@@ -88,11 +88,9 @@ def RequestHandlerClassFactory(simulate, address, ssids):
                              {"ssid": "wpa2", "security":"WPA2"}, \
                              {"ssid": "wep", "security":"WEP"}, \
                              {"ssid": "wpa", "security":"WPA"}, \
-                             {"ssid": "enterprise", "security": "ENTERPRISE"}]
-
-                # always add a hidden place holder
-                ssids.append({"ssid": "Enter a hidden WiFi name", \
-                              "security": "HIDDEN"})
+                             {"ssid": "enterprise", "security": "ENTERPRISE"}, \
+                             {"ssid": "Enter a hidden WiFi name", \
+                                "security": "HIDDEN"}]
 
                 response.write(json.dumps(ssids).encode('utf-8'))
                 print(f'GET {self.path} returning: {response.getvalue()}')
@@ -112,7 +110,7 @@ def RequestHandlerClassFactory(simulate, address, ssids):
             self.end_headers()
             response = BytesIO()
             print(f'POST received: {body}')
-            fields = parse_qs(body)
+            fields = parse_qs(body.decode('utf-8'))
             print(f'fields={fields}')
 #debugrob: parse this body for the form fields
 # ssid

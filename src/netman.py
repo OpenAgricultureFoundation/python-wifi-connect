@@ -131,6 +131,9 @@ def get_list_of_access_points():
 
             ssids.append({"ssid": ap.Ssid, "security": security_str})
 
+    # always add a hidden place holder
+    ssids.append({"ssid": "Enter a hidden WiFi name", "security": "HIDDEN"})
+
     print(f'Available SSIDs: {ssids}')
     return ssids
 
