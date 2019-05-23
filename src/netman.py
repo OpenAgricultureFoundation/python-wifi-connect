@@ -279,7 +279,10 @@ def connect_to_AP(conn_type=None, conn_name=GENERIC_CONNECTION_NAME, \
             break
 
     if dev.State == NetworkManager.NM_DEVICE_STATE_ACTIVATED:
+        print(f'Connection {conn_name} is live.')
         return True
+
+    print(f'Connection {conn_name} failed.')
     return False
 
 

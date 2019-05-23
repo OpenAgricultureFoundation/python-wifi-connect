@@ -15,7 +15,7 @@ def stop():
     pid = pid.decode('utf-8')
     pid = pid.strip()
     if 0 < len(pid):
-        print(f"Killing dnsmasq PID '{pid}'")
+        print(f"Killing dnsmasq, PID='{pid}'")
         ps = subprocess.Popen(f"kill -9 {pid}", shell=True)
         ps.wait()
 
@@ -39,11 +39,10 @@ def start():
 
     # run dnsmasq in the background and save a reference to the object
     ps = subprocess.Popen(args)
-    ps.wait()
+    # don't wait here, proc runs in background until we kill it.
 
     # give a few seconds for the proc to start
     time.sleep(2)
-
-    print(f'Started {path}, PID={ps.pid}')
+    print(f'Started dnsmasq, PID={ps.pid}')
 
 
