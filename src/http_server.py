@@ -143,7 +143,10 @@ def RequestHandlerClassFactory(simulate, address, ssids):
                 if FORM_SSID in s and ssid == s[FORM_SSID]:
                     if s['security'] == "ENTERPRISE":
                         conn_type = netman.CONN_TYPE_SEC_ENTERPRISE
+                    else if s['security'] == "NONE":
+                        conn_type = netman.CONN_TYPE_SEC_NONE 
                     else:
+                        # all others need a password
                         conn_type = netman.CONN_TYPE_SEC_PASSWORD
                     break
 

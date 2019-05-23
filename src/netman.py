@@ -167,6 +167,9 @@ def connect_to_AP(conn_type=None, conn_name=GENERIC_CONNECTION_NAME, \
         ssid=None, username=None, password=None):
 
     print(f"debugrob connect_to_AP conn_type={conn_type} conn_name={conn_name} ssid={ssid} username={username} password={password}")
+# /networks {"ssid": "xfinitywifi", "security": "NONE"}
+# connect_to_AP conn_type=PASSWORD conn_name=python-wifi-connect ssid=xfinitywifi username=None password=None
+# debugrob new connection type=WEP/WPA/WPA2
 
     if conn_type is None or ssid is None:
         print(f'connect_to_AP() Error: Missing args conn_type or ssid')
