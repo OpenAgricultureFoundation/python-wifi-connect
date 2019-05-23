@@ -154,8 +154,12 @@ CONN_TYPE_SEC_ENTERPRISE = 'ENTERPRISE' # MIT SECURE
 #------------------------------------------------------------------------------
 # Generic connect to the user selected AP function.
 # Returns True for success, or False.
-def connect_to_AP(conn_type, conn_name=GENERIC_CONNECTION_NAME, \
-        ssid, username=None, password=None):
+def connect_to_AP(conn_type=None, conn_name=GENERIC_CONNECTION_NAME, \
+        ssid=None, username=None, password=None):
+
+    if conn_type is None or ssid is None:
+        print(f'connect_to_AP() Error: Missing args conn_type or ssid')
+        return False
 
     # This is the hotspot that we turn on, on the RPI so we can show our
     # captured portal to let the user select an AP and provide credentials.
@@ -237,7 +241,7 @@ def connect_to_AP(conn_type, conn_name=GENERIC_CONNECTION_NAME, \
         conn_str = 'ENTERPRISE'
 
     if conn_dict is None:
-        print(f'connect_to_AP() Error: invalid conn_type="{conn_type}"')
+        print(f'connect_to_AP() Error: Invalid conn_type="{conn_type}"')
         return False
 
     NetworkManager.Settings.AddConnection(conn_type)
@@ -257,7 +261,7 @@ def connect_to_AP(conn_type, conn_name=GENERIC_CONNECTION_NAME, \
         if dev.DeviceType == dtype:
             break
     else:
-        print(f"No suitable and available {ctype} device found.")
+        print(f"connect_to_AP() Error: No suitable and available {ctype} device found.")
         return False
 
     # And connect
