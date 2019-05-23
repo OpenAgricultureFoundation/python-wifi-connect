@@ -1,5 +1,8 @@
+# Our main wifi-connect application, which is based around an HTTP server.
+
 import os, getopt, sys, json, atexit
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from urllib.parse import urlparse, parse_qs
 from io import BytesIO
 
 # Local modules
@@ -15,8 +18,9 @@ UI_PATH = '../ui'
 #------------------------------------------------------------------------------
 # called at exit
 def cleanup():
-    print("cleanup() called at exit.")
+    print("Cleaning up prior to exit.")
     dnsmasq.stop()
+    netman.stop_hotspot()
 
 
 #------------------------------------------------------------------------------
@@ -64,6 +68,19 @@ def RequestHandlerClassFactory(simulate, address):
                 self.end_headers()
                 response = BytesIO()
                 ssids = []
+                """ map whatever we get from net man to our constants:
+                Security:
+                    NONE         
+                    HIDDEN         
+                    WEP         
+                    WPA        
+                    WPA2      
+                    ENTERPRISE
+                Required user input (from UI form):
+                    NONE                   - No input requried.
+                    HIDDEN, WEP, WPA, WPA2 - Need password.
+                    ENTERPRISE             - Need username and password.
+                """
                 if self.simulate:
                     print(f'Simulating a list of NetworkManager APs')
                     ssids = [{"ssid": "open network", "security": "NONE"}, \
@@ -72,7 +89,8 @@ def RequestHandlerClassFactory(simulate, address):
                              {"ssid": "wpa", "security":"WPA"}, \
                              {"ssid": "enterprise", "security": "ENTERPRISE"}]
                 else:
-                    pass #debugrob, get list of AP from net man on RPI
+                    # Get list of available AP from net man 
+                    ssids = netman.get_list_of_access_points()
 
                 # always add a hidden place holder
                 ssids.append({"ssid": "Enter a hidden WiFi name", \
@@ -82,19 +100,6 @@ def RequestHandlerClassFactory(simulate, address):
                 print(f'GET {self.path} returning: {response.getvalue()}')
                 self.wfile.write(response.getvalue())
                 return
-                """debugrob, use these constants, map net man to these
-                Security:
-                    NONE         
-                    HIDDEN         
-                    WEP         
-                    WPA        
-                    WPA2      
-                    ENTERPRISE
-                Creds:
-                    NONE,
-                    HIDDEN, WEP, WPA, WPA2 need password
-                    ENTERPRISE needs username and password
-                """
 
             # All other requests are handled by the server which vends files 
             # from the ui_path we were initialized with.
@@ -109,9 +114,23 @@ def RequestHandlerClassFactory(simulate, address):
             self.end_headers()
             response = BytesIO()
             print(f'POST received: {body}')
+            fields = parse_qs(body)
+            print(f'fields={fields}')
 #debugrob: parse this body for the form fields
+# ssid
+# hidden-ssid
+# identity
+# passphrase 
             response.write(b'OK\n')
             self.wfile.write(response.getvalue())
+
+#debugrob: netman.stop_hotspot()
+
+#debugrob: netman.connect_to_AP(conn_type, ssid, username=None, password=None)
+# check for T/F above
+
+#debugrob: if connection to new AP fails, start hotspot and start over.
+
 
     return  MyHTTPReqHandler # the class our factory just created.
 
@@ -160,6 +179,7 @@ def main(address, port, ui_path, simulate, delete_connections):
         httpd.serve_forever()
     except KeyboardInterrupt:
         dnsmasq.stop()
+        netman.stop_hotspot()
         httpd.server_close()
 
 

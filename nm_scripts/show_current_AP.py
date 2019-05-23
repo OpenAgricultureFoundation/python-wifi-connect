@@ -20,13 +20,17 @@ for dev in NetworkManager.NetworkManager.GetDevices():
     for ap in dev.GetAccessPoints():
         #print('%-30s %dMHz %d%%' % (ap.Ssid, ap.Frequency, ap.Strength))
 
-        # Get Flags, WpaFlags and RsnFlags, both are bit OR'd combinations of the
-        # NM_802_11_AP_SEC_* bit flags.
+        # Get Flags, WpaFlags and RsnFlags, all are bit OR'd combinations 
+        # of the NM_802_11_AP_SEC_* bit flags.
         # https://developer.gnome.org/NetworkManager/1.2/nm-dbus-types.html#NM80211ApSecurityFlags
 
         security = NM_SECURITY_NONE
         user_input = USER_INPUT_NONE
 
+        # Based on a subset of the flag settings we can determine which
+        # type of security this AP uses.  
+        # We can also determine what input we need from the user to connect to
+        # any given AP (required for our dynamic UI form).
         if ap.Flags & NetworkManager.NM_802_11_AP_FLAGS_PRIVACY and \
                 ap.WpaFlags == NetworkManager.NM_802_11_AP_SEC_NONE and \
                 ap.RsnFlags == NetworkManager.NM_802_11_AP_SEC_NONE:
@@ -47,6 +51,7 @@ for dev in NetworkManager.NetworkManager.GetDevices():
             user_input = USER_INPUT_PASSWORD
             user_input |= USER_INPUT_USERNAME
 
+        # Decode our flag into a display string
         security_str = ''
         if security == NM_SECURITY_NONE:
             security_str = 'NONE'
@@ -63,6 +68,7 @@ for dev in NetworkManager.NetworkManager.GetDevices():
         if security & NM_SECURITY_ENTERPRISE:
             security_str += 'ENTERPRISE'
 
+        # Decode our flag into a display string
         input_str = ''
         if user_input == USER_INPUT_NONE:
             input_str = 'NONE'
