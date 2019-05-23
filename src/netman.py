@@ -1,10 +1,15 @@
 # Start a local hotspot using NetworkManager.
 
+# You must use https://developer.gnome.org/NetworkManager/1.2/spec.html
+# to see the DBUS API that the python-NetworkManager module is communicating
+# over (the module documentation is scant).
+
 import NetworkManager
 import uuid, os, sys, time
 
 
 #------------------------------------------------------------------------------
+# Should do this before listing any APs or starting the hotspot.
 def delete_all_wifi_connections():
     # Get all known connections
     connections = NetworkManager.Settings.ListConnections()
@@ -19,9 +24,23 @@ def delete_all_wifi_connections():
 
 
 #------------------------------------------------------------------------------
+# Return a list of connections
+def get_list_of_access_points():
+    #debugrob: get code from nm_scripts/show_current_AP.py
+    pass
+
+
+#------------------------------------------------------------------------------
+# Returns True if we are connected to the internet, False otherwise.
+def have_active_internet_connection():
+    #debugrob: write this
+    pass
+
+
+#------------------------------------------------------------------------------
 # Start a local hotspot on the wifi interface.
 # Returns True for success, False for error.
-def start():
+def start_hotspot():
     connection_ID = 'hotspot'
     hotspot = {
  '802-11-wireless': {'band': 'bg',

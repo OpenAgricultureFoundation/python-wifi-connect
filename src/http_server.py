@@ -3,14 +3,13 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 from io import BytesIO
 
 # Local modules
-import hotspot
+import netman
 import dnsmasq
 
 # Defaults
 ADDRESS = '192.168.42.1'
 PORT = 80
 UI_PATH = '../ui'
-SIMULATE = False
 
 
 #------------------------------------------------------------------------------
@@ -119,17 +118,26 @@ def RequestHandlerClassFactory(simulate, address):
 
 #------------------------------------------------------------------------------
 # Create the hotspot, start dnsmasq, start the HTTP server.
-def main(address, port, ui_path, simulate):
+def main(address, port, ui_path, simulate, delete_connections):
 
-    # Remove all existing wifi connections and start the hotspot
-    hotspot.delete_all_wifi_connections()
-    if not hotspot.start():
+    # See if caller wants to delete all existing connections first
+    if delete_connections and not simulate:
+        netman.delete_all_wifi_connections()
+
+    # Check if we are already connected, if so we are done.
+    if netman.have_active_internet_connection() and not simulate:
+        print('Already connected to the internet, nothing to do, exiting.')
+        sys.exit()
+
+    # Start the hotspot
+    if not netman.start_hotspot() and not simulate:
         print('Error starting hotspot, exiting.')
         sys.exit(1)
 
     # Start dnsmasq (to advertise us as a router so captured portal pops up
     # on the users machine to vend our UI in our http server)
-    dnsmasq.start()
+    if not simulate:
+        dnsmasq.start()
 
     # Find the ui directory which is up one from where this file is located.
     web_dir = os.path.join(os.path.dirname(__file__), ui_path)
@@ -172,14 +180,16 @@ if __name__ == "__main__":
     address = ADDRESS
     port = PORT
     ui_path = UI_PATH
-    simulate = SIMULATE
+    simulate = False
+    delete_connections = False
 
     usage = ''\
 f'Command line args: \n'\
-f'  -a <HTTP server address>    Default: {address} \n'\
-f'  -p <HTTP server port>       Default: {port} \n'\
-f'  -u <UI directory to serve>  Default: "{ui_path}" \n'\
-f'  -s Simulate NetworkManager  Default: {simulate} \n'\
+f'  -a <HTTP server address>     Default: {address} \n'\
+f'  -p <HTTP server port>        Default: {port} \n'\
+f'  -u <UI directory to serve>   Default: "{ui_path}" \n'\
+f'  -d Delete Connections First  Default: {delete_connections} \n'\
+f'  -s Simulate NetworkManager   Default: {simulate} \n'\
 f'  -h Show help.\n'
 
     try:
@@ -192,6 +202,9 @@ f'  -h Show help.\n'
         if opt == '-h':
             print(usage)
             sys.exit()
+
+        elif opt in ("-d"):
+           delete_connections = True
 
         elif opt in ("-s"):
             simulate = True
@@ -209,6 +222,7 @@ f'  -h Show help.\n'
     print(f'Port={port}')
     print(f'UI path={ui_path}')
     print(f'Simulate={simulate}')
-    main(address, port, ui_path, simulate)
+    print(f'Delete Connections={delete_connections}')
+    main(address, port, ui_path, simulate, delete_connections)
 
 
