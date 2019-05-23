@@ -167,9 +167,6 @@ def connect_to_AP(conn_type=None, conn_name=GENERIC_CONNECTION_NAME, \
         ssid=None, username=None, password=None):
 
     print(f"debugrob connect_to_AP conn_type={conn_type} conn_name={conn_name} ssid={ssid} username={username} password={password}")
-# /networks {"ssid": "xfinitywifi", "security": "NONE"}
-# connect_to_AP conn_type=PASSWORD conn_name=python-wifi-connect ssid=xfinitywifi username=None password=None
-# debugrob new connection type=WEP/WPA/WPA2
 
     if conn_type is None or ssid is None:
         print(f'connect_to_AP() Error: Missing args conn_type or ssid')
@@ -225,15 +222,6 @@ def connect_to_AP(conn_type=None, conn_name=GENERIC_CONNECTION_NAME, \
             'ipv4': {'method': 'auto'},
             'ipv6': {'method': 'auto'}
         }
-        """
-        debugrob this happens when I pick 'xfinitywifi' from home, it advertises as no security.
-
-POST received: {'ssid': ['xfinitywifi']}
-
-new connection {'802-11-wireless': {'mode': 'infrastructure', 'security': '802-11-wireless-security', 'ssid': 'xfinitywifi'}, '802-11-wireless-security': {'key-mgmt': 'wpa-psk', 'psk': None}, 'connection': {'id': 'python-wifi-connect', 'type': '802-11-wireless', 'uuid': '38f3ec7c-b64f-4d95-8fa3-42b818935014'}, 'ipv4': {'method': 'auto'}, 'ipv6': {'method': 'auto'}} type=WEP/WPA/WPA2
-
-ERROR:dbus.connection:Unable to set arguments ({'802-11-wireless': {'mode': 'infrastructure', 'security': '802-11-wireless-security', 'ssid': [dbus.Byte(120), dbus.Byte(102), dbus.Byte(105), dbus.Byte(110), dbus.Byte(105), dbus.Byte(116), dbus.Byte(121), dbus.Byte(119), dbus.Byte(105), dbus.Byte(102), dbus.Byte(105)]}, '802-11-wireless-security': {'key-mgmt': 'wpa-psk', 'psk': None}, 'connection': {'id': 'python-wifi-connect', 'type': '802-11-wireless', 'uuid': '38f3ec7c-b64f-4d95-8fa3-42b818935014'}, 'ipv4': {'method': 'auto'}, 'ipv6': {'method': 'auto'}},) according to signature 'a{sa{sv}}': <class 'TypeError'>: Don't know which D-Bus type to use to encode type "NoneType"
-        """
 
         # Hidden, WEP, WPA, WPA2, password required.
         passwd_dict = {
