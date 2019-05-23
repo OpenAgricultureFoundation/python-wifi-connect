@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 # Command line args:
-#  -p <HTTP server port>       Default: 5000
-#  -u <UI directory to serve>  Default: "../ui"
-#  -s                          Simulate NetworkManager.
-#  -h                          Show help.
+#  -a <HTTP server address>     Default: 192.168.42.1
+#  -p <HTTP server port>        Default: 80
+#  -u <UI directory to serve>   Default: "../ui"
+#  -d Delete Connections First  Default: False
+#  -s Simulate NetworkManager   Default: False
+#  -h Show help.
 
 # Check OS we are running on.  NetworkManager only works on Linux.
 SIMULATE=""

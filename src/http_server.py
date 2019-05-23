@@ -213,7 +213,7 @@ f'  -s Simulate NetworkManager   Default: {simulate} \n'\
 f'  -h Show help.\n'
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "p:u:sh")
+        opts, args = getopt.getopt(sys.argv[1:], "a:p:u:dsh")
     except getopt.GetoptError:
         print(usage)
         sys.exit(2)
