@@ -244,7 +244,7 @@ def connect_to_AP(conn_type=None, conn_name=GENERIC_CONNECTION_NAME, \
         print(f'connect_to_AP() Error: Invalid conn_type="{conn_type}"')
         return False
 
-    NetworkManager.Settings.AddConnection(conn_type)
+    NetworkManager.Settings.AddConnection(conn_dict)
     print(f"Added connection {conn_name} of type {conn_str}")
 
     # Now find this connection and its device
