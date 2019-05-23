@@ -36,7 +36,7 @@ class MyHTTPServer(HTTPServer):
 # A custom http request handler class factory.
 # Handle the GET and POST requests from the UI form and JS.
 # The class factory allows us to pass custom arguments to the handler.
-def RequestHandlerClassFactory(simulate, address):
+def RequestHandlerClassFactory(simulate, address, ssids):
 
     class MyHTTPReqHandler(SimpleHTTPRequestHandler):
 
@@ -45,6 +45,7 @@ def RequestHandlerClassFactory(simulate, address):
             # our super class will call do_GET().
             self.simulate = simulate
             self.address = address
+            self.ssids = ssids
             super(MyHTTPReqHandler, self).__init__(*args, **kwargs)
 
         # See if this is a specific request, otherwise let the server handle it.
@@ -67,7 +68,7 @@ def RequestHandlerClassFactory(simulate, address):
                 self.send_response(200)
                 self.end_headers()
                 response = BytesIO()
-                ssids = []
+                ssids = self.ssids # passed in to the class factory
                 """ map whatever we get from net man to our constants:
                 Security:
                     NONE         
@@ -88,9 +89,6 @@ def RequestHandlerClassFactory(simulate, address):
                              {"ssid": "wep", "security":"WEP"}, \
                              {"ssid": "wpa", "security":"WPA"}, \
                              {"ssid": "enterprise", "security": "ENTERPRISE"}]
-                else:
-                    # Get list of available AP from net man 
-                    ssids = netman.get_list_of_access_points()
 
                 # always add a hidden place holder
                 ssids.append({"ssid": "Enter a hidden WiFi name", \
@@ -121,6 +119,8 @@ def RequestHandlerClassFactory(simulate, address):
 # hidden-ssid
 # identity
 # passphrase 
+# fields={b'ssid': [b'Enter a hidden WiFi name'], b'hidden-ssid': [b'spanky'], b'passphrase': [b'1sparty0']}
+
             response.write(b'OK\n')
             self.wfile.write(response.getvalue())
 
@@ -148,6 +148,12 @@ def main(address, port, ui_path, simulate, delete_connections):
         print('Already connected to the internet, nothing to do, exiting.')
         sys.exit()
 
+    # Get list of available AP from net man.  
+    # Must do this AFTER deleting any existing connections (above),
+    # and BEFORE starting our hotspot (or the hotspot will be the only thing
+    # in the list).
+    ssids = netman.get_list_of_access_points()
+
     # Start the hotspot
     if not netman.start_hotspot() and not simulate:
         print('Error starting hotspot, exiting.')
@@ -170,10 +176,11 @@ def main(address, port, ui_path, simulate, delete_connections):
     server_address = (address, port)
 
     # Custom request handler class (so we can pass in our own args)
-    MyRequestHandlerClass = RequestHandlerClassFactory(simulate, address)
+    MyRequestHandlerClass = RequestHandlerClassFactory(simulate, address, ssids)
 
     # Start an HTTP server to serve the content in the ui dir and handle the 
     # POST request in the handler class.
+    print(f'Waiting for someone to connect to our hotspot...')
     httpd = MyHTTPServer(web_dir, server_address, MyRequestHandlerClass)
     try:
         httpd.serve_forever()
