@@ -109,26 +109,54 @@ def RequestHandlerClassFactory(simulate, address, ssids):
             self.send_response(200)
             self.end_headers()
             response = BytesIO()
-            print(f'POST received: {body}')
             fields = parse_qs(body.decode('utf-8'))
-            print(f'fields={fields}')
-#debugrob: parse this body for the form fields
-# ssid
-# hidden-ssid
-# identity
-# passphrase 
-# fields={b'ssid': [b'Enter a hidden WiFi name'], b'hidden-ssid': [b'spanky'], b'passphrase': [b'1sparty0']}
+            print(f'POST received: {fields}')
 
-            response.write(b'OK\n')
-            self.wfile.write(response.getvalue())
+            # Parse the form post
+            FORM_SSID = 'ssid'
+            FORM_HIDDEN_SSID = 'hidden-ssid'
+            FORM_USERNAME = 'identity'
+            FORM_PASSWORD = 'passphrase'
 
-#debugrob: netman.stop_hotspot()
+            if FORM_SSID not in fields:
+                print(f'Error: POST is missing {FORM_SSID} field.')
+                return
 
-#debugrob: netman.connect_to_AP(conn_type, ssid, username=None, password=None)
-# check for T/F above
+            ssid = fields[FORM_SSID]
+            password = None
+            username = None
+            if FORM_HIDDEN_SSID in fields: 
+                ssid = fields[FORM_HIDDEN_SSID] # override with hidden name
+            if FORM_USERNAME in fields: 
+                username = fields[FORM_USERNAME] 
+            if FORM_PASSWORD in fields: 
+                password = fields[FORM_PASSWORD] 
 
+            # Look up the ssid in the list we sent, to find out its security
+            # type for the new connection we have to make
+            conn_type = netman.CONN_TYPE_SEC_NONE # Open, no auth AP
+
+            if FORM_HIDDEN_SSID in fields: 
+                conn_type = netman.CONN_TYPE_SEC_PASSWORD # Assumption...
+
+            for s in self.ssids:
+                if FORM_SSID in s and ssid == s[FORM_SSID]:
+                    if s['security'] == "ENTERPRISE":
+                        conn_type = netman.CONN_TYPE_SEC_ENTERPRISE
+                    else:
+                        conn_type = netman.CONN_TYPE_SEC_PASSWORD
+                    break
+
+            # Stop the hotspot
+            netman.stop_hotspot()
+
+            # Connect to the user's selected AP
+            if netman.connect_to_AP(conn_type, ssid, username, password):
+                response.write(b'OK\n')
+            else:
+                response.write(b'ERROR\n')
 #debugrob: if connection to new AP fails, start hotspot and start over.
-
+            self.wfile.write(response.getvalue())
 
     return  MyHTTPReqHandler # the class our factory just created.
 
@@ -178,7 +206,7 @@ def main(address, port, ui_path, simulate, delete_connections):
 
     # Start an HTTP server to serve the content in the ui dir and handle the 
     # POST request in the handler class.
-    print(f'Waiting for someone to connect to our hotspot...')
+    print(f'Waiting for a connection to our hotspot {netman.get_hotspot_SSID()} ...')
     httpd = MyHTTPServer(web_dir, server_address, MyRequestHandlerClass)
     try:
         httpd.serve_forever()

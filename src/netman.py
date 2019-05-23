@@ -139,11 +139,17 @@ def get_list_of_access_points():
 
 
 #------------------------------------------------------------------------------
+# Get hotspot SSID name.
+def get_hotspot_SSID():
+    return 'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT')
+
+
+#------------------------------------------------------------------------------
 # Start a local hotspot on the wifi interface.
 # Returns True for success, False for error.
 def start_hotspot():
     return connect_to_AP(CONN_TYPE_HOTSPOT, HOTSPOT_CONNECTION_NAME, \
-            'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT'))
+            get_hotspot_SSID())
 
 
 #------------------------------------------------------------------------------
