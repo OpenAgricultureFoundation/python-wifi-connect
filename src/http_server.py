@@ -151,7 +151,9 @@ def RequestHandlerClassFactory(simulate, address, ssids):
             netman.stop_hotspot()
 
             # Connect to the user's selected AP
-            if netman.connect_to_AP(conn_type, ssid, username, password):
+            print(f'debugrob calling connect AP {conn_type} {ssid} {username} {password}')
+            if netman.connect_to_AP(conn_type=conn_type, ssid=ssid, \
+                    username=username, password=passwd):
                 response.write(b'OK\n')
             else:
                 response.write(b'ERROR\n')
