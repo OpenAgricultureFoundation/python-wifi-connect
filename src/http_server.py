@@ -151,13 +151,22 @@ def RequestHandlerClassFactory(simulate, address, ssids):
             netman.stop_hotspot()
 
             # Connect to the user's selected AP
-            if netman.connect_to_AP(conn_type=conn_type, ssid=ssid, \
+            success = netman.connect_to_AP(conn_type=conn_type, ssid=ssid, \
                     username=username, password=password):
+
+            if success
                 response.write(b'OK\n')
             else:
                 response.write(b'ERROR\n')
-#debugrob: if connection to new AP fails, start hotspot and start over.
             self.wfile.write(response.getvalue())
+
+            if success
+                print(f'Connected!  Exiting app.')
+                sys.exit()
+            else:
+                print(f'debugrob, how to restart after AP connection fail?')
+                pass
+#debugrob: if connection to new AP fails, start hotspot and start over.
 
     return  MyHTTPReqHandler # the class our factory just created.
 
