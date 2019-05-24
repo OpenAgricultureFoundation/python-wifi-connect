@@ -24,29 +24,29 @@ We use the balena cloud to manage our embedded application as a docker container
 1. From the cloud console, download the .zip file and flash the image to an SD card.
 1. Remount the SD card in your machine (OSX macbook in my case).
 1. `cd /Volumnes/resin-boot`
-1. `vi config.txt` and add these lines:
-```
-enable_uart=1
-dtoverlay=pi3-disable-bt
-dtparam=uart0=on
-init_uart_baud=115200
-```
+1. `vi config.txt` and add these lines: 
+    ```
+    enable_uart=1
+    dtoverlay=pi3-disable-bt
+    dtparam=uart0=on
+    init_uart_baud=115200
+    ```
 1. `vi cmdline.txt` and change 
-```
-console=null to console=serial0,115200
-```
+    ```
+    console=null to console=serial0,115200
+    ```
 1. Eject the SD card from the mac, put in pi zero and power it up.
 1. Follow the top steps for cable wiring and using `screen`.
 1. You may have to press the 'enter/return' key on your keyboard after `screen` connects to see the prompt.
 1. On a balena development OS, you can log in as 'root' with no password.
 1. Then I list what balena (docker) containers are running:
-```
-balena ps
-```
+    ```
+    balena ps
+    ```
 1. Then I can connect to a container to do my app development:
-```
-balena container exec -it <container name> /bin/bash
-```
+    ```
+    balena container exec -it <container name> /bin/bash
+    ```
 
 
 
