@@ -51,3 +51,6 @@ install_network_manager() {
     apt-get install -y network-manager
     apt-get clean
 }
+
+
+

@@ -3,11 +3,13 @@ An application that displays a wifi configuration UI for embedded Linux devices.
 
 Inspired by the [wifi-connect](https://github.com/balena-io/wifi-connect) project written by [balena.io](https://www.balena.io/).
 
-***
-![How it works](./docs/images/how-it-works.png?raw=true)
+# Install and Run
 
-How it works
-------------
+Please read the [INSTALL.md](INSTALL.md) then the [RUN.md](RUN.md) files.
+
+
+# How it works
+![How it works](./docs/images/how-it-works.png?raw=true)
 
 WiFi Connect interacts with NetworkManager, which should be the active network manager on the device's host OS.
 
@@ -17,7 +19,7 @@ WiFi Connect detects available WiFi networks and opens an access point with a ca
 
 ### 2. Connect: User Connects Phone to Device Access Point
 
-Connect to the opened access point on the device from your mobile phone or laptop. The access point SSID is, by default, `OpenAg WiFi Connect`. It can be changed by setting the `--portal-ssid` command line argument or the `PORTAL_SSID` environment variable. By default, the network is unprotected, but a WPA2 passphrase can be added by setting the `--portal-passphrase` command line argument or the `PORTAL_PASSPHRASE` environment variable.
+Connect to the opened access point on the device from your mobile phone or laptop. The access point SSID is, by default, `PFC_EDU-<name>` where "name" is something random like "shy-lake" or "green-frog". 
 
 ### 3. Portal: Phone Shows Captive Portal to User
 

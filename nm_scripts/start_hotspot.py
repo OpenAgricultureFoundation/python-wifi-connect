@@ -17,19 +17,6 @@ nmcli connection up hotspot
 # Also check what the rust wifi-connect does
 # cd /usr/src/app && ./wifi-connect -s hotspot
 
-hotspot = {
- '802-11-wireless': {'band': 'bg',
-                     'mode': 'ap',
-                     'ssid': 'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT')},
- 'connection': {'autoconnect': False,
-                'id': 'PFC_EDU',
-                'interface-name': 'wlan0',
-                'type': '802-11-wireless',
-                'uuid': '8416b3ac-32fe-4d90-8d3b-e16d017d0f18'},
- 'ipv4': {'address-data': [{'address': '192.168.42.1', 'prefix': 24}],
-          'addresses': [['192.168.42.1', 24, '0.0.0.0']],
-          'method': 'manual'},
- 'ipv6': {'method': 'auto'}
 """
 
 import NetworkManager
