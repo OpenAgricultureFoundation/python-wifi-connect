@@ -6,11 +6,15 @@ When I refer to 'NetworkManager' as 'NM', I'm referring to the python module tha
 ## How the application works
 1. Check if there is an active internet connection, if so we exit with nothing to do.
 1. Start the [dnsmasq](https://en.wikipedia.org/wiki/Dnsmasq) utility to forward DNS, run a DHCP server and advertise us as a new wifi router.
-1. Use NM to create a local 'hotspot' access point.
-1. Start our HTTP server, which will use JavaScript to ask for `/networks` where we use NM to get a list of the list of local Access Points (AP).  We also add a place holder to the list for the user to supply the name of a hidden AP.
-1. When the user connects their machine to the AP we advertise, we act as a captured portal and display our UI (in the `ui/` dir) which is an HTML form that allows the user to pick a local wifi and supply a password.
-1. The HTTP server process the form POST and uses NM to stop our hotspot and connect to the AP the user has selected.  If this fails we go back to step 3.
+1. Get and save a list of available Access Points (AP) and add a special place holder so the user can provide a hidden AP.
+1. Use NM to create a local 'hotspot' AP.
+1. Start our HTTP server.
+1. When the user connects their machine to the AP we advertise, we act as a captured portal and display our user interface (UI) (in the `ui/` dir) which is an HTML form that allows the user to pick a local wifi and supply a password.
+1. When a browser loads the UI, a bit of [javascript](../ui/js/index.js) is run which requests `/networks` from the HTTP server, a REST request.  The server returns the list of AP we collected in step 3.
+1. The HTTP server processes the form POST and uses NM to stop our hotspot and connect to the AP the user has selected.  If this fails we go back to step 3.
 1. If the device is successfully connected to an AP, we stop dnsmasq and exit.
+
+[See this flow diagram (lifted from balena)](images/flow.png) to visually show what is going on.
 
 
 ## References
