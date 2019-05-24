@@ -6,14 +6,14 @@ You would want to use a setup like this if you are continually switching your Ra
 1. Install the drivers for your OS to communicate with the cable (see the links on the above product page).
 1. Use a seperate power cable for the RPi.  If you try to power it off your USB port, it most likely won't work since newer RPi draw too much current.
 1. Attach the cable to the correct RX, TX, GND pins on the RPi you have.
- * This image shows the cable connected to a RPi zero with the header soldered on.
- * Pi zero pin 6 to cable GND black wire.
- * Pi zero pin 8 to TX cable white wire.
- * Pi zero pin 10 to RX cable green wire.
- * [Pi zero pin out](https://pinout.xyz/pinout/serial_pi_zero).
- * ![connections](./images/pi_zero_console_cable.png?raw=true) 
+    * This image shows the cable connected to a RPi zero with the header soldered on.
+    * Pi zero pin 6 to cable GND black wire.
+    * Pi zero pin 8 to TX cable white wire.
+    * Pi zero pin 10 to RX cable green wire.
+    * [Pi zero pin out](https://pinout.xyz/pinout/serial_pi_zero).
+    * ![connections](images/pi_zero_console_cable.png?raw=true) 
 1. Run a terminal program to connect to the cable's serial port on your machine.  I'm develop on OSX, so I use:
- * `screen -S balena -t balena /dev/cu.SLAB_USBtoUART 115200`
+    * `screen -S balena -t balena /dev/cu.SLAB_USBtoUART 115200`
 
 
 ## Balena cloud specific steps
