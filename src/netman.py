@@ -172,7 +172,7 @@ CONN_TYPE_SEC_ENTERPRISE = 'ENTERPRISE' # MIT SECURE
 def connect_to_AP(conn_type=None, conn_name=GENERIC_CONNECTION_NAME, \
         ssid=None, username=None, password=None):
 
-    print(f"debugrob connect_to_AP conn_type={conn_type} conn_name={conn_name} ssid={ssid} username={username} password={password}")
+    #print(f"connect_to_AP conn_type={conn_type} conn_name={conn_name} ssid={ssid} username={username} password={password}")
 
     if conn_type is None or ssid is None:
         print(f'connect_to_AP() Error: Missing args conn_type or ssid')
@@ -265,7 +265,7 @@ def connect_to_AP(conn_type=None, conn_name=GENERIC_CONNECTION_NAME, \
             print(f'connect_to_AP() Error: Invalid conn_type="{conn_type}"')
             return False
 
-        print(f"debugrob new connection {conn_dict} type={conn_str}")
+        #print(f"new connection {conn_dict} type={conn_str}")
 
         NetworkManager.Settings.AddConnection(conn_dict)
         print(f"Added connection {conn_name} of type {conn_str}")
