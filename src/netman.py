@@ -85,6 +85,10 @@ def get_list_of_access_points():
             continue
         for ap in dev.GetAccessPoints():
 
+            # Don't add duplicates to the list, issue #8
+            if ssids.__contains__(ap.Ssid):
+                continue
+
             # Get Flags, WpaFlags and RsnFlags, all are bit OR'd combinations 
             # of the NM_802_11_AP_SEC_* bit flags.
             # https://developer.gnome.org/NetworkManager/1.2/nm-dbus-types.html#NM80211ApSecurityFlags
