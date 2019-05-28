@@ -85,10 +85,6 @@ def get_list_of_access_points():
             continue
         for ap in dev.GetAccessPoints():
 
-            # Don't add duplicates to the list, issue #8
-            if ssids.__contains__(ap.Ssid):
-                continue
-
             # Get Flags, WpaFlags and RsnFlags, all are bit OR'd combinations 
             # of the NM_802_11_AP_SEC_* bit flags.
             # https://developer.gnome.org/NetworkManager/1.2/nm-dbus-types.html#NM80211ApSecurityFlags
@@ -133,7 +129,13 @@ def get_list_of_access_points():
             if security & NM_SECURITY_ENTERPRISE:
                 security_str = 'ENTERPRISE'
 
-            ssids.append({"ssid": ap.Ssid, "security": security_str})
+            entry = {"ssid": ap.Ssid, "security": security_str}
+
+            # Don't add duplicates to the list, issue #8
+            if ssids.__contains__(entry):
+                continue
+
+            ssids.append(entry)
 
     # always add a hidden place holder
     ssids.append({"ssid": "Enter a hidden WiFi name", "security": "HIDDEN"})
