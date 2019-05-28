@@ -135,6 +135,10 @@ def get_list_of_access_points():
             if ssids.__contains__(entry):
                 continue
 
+            # Don't add other PFC's to the list!
+            if ap.Ssid.startswith('PFC_EDU-'):
+                continue
+
             ssids.append(entry)
 
     # always add a hidden place holder
