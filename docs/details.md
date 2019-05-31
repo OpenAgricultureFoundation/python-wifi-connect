@@ -27,7 +27,7 @@ When I refer to 'NetworkManager' as 'NM', I'm referring to the python module tha
 
 
 ## Py NetworkManager
-See the `nm_scripts/` directory for the scripts I copied/modified to figure out how to use NM.  Once tested / grokked, this code will was integrated into the python HTTP server which handles user input.
+See the `nm_scripts/` directory for the scripts I copied/modified to figure out how to use NM.  Once tested / grokked, this code was integrated into the python HTTP server which handles user input.
 
 ## Development setup
 I [use this serial console cable](console_cable.md) setup to do development on the Raspberry Pi.
