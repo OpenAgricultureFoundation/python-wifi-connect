@@ -5,19 +5,13 @@
 #  -p <HTTP server port>        Default: 80
 #  -u <UI directory to serve>   Default: "../ui"
 #  -d Delete Connections First  Default: False
-#  -s Simulate NetworkManager   Default: False
+#  -r Device Registration Code  Default: ""
 #  -h Show help.
 
 # Check OS we are running on.  NetworkManager only works on Linux.
-SIMULATE=""
 if [[ "$OSTYPE" != "linux"* ]]; then
     echo "ERROR: This application only runs on Linux."
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        echo "WARNING: OSX is only supported for development/simulation."
-        SIMULATE="-s"
-    else
-        exit 1
-    fi
+    exit 1
 fi
 
 # Save the path to THIS script (before we go changing dirs)
@@ -29,4 +23,4 @@ cd $TOPDIR
 source $TOPDIR/venv/bin/activate
 
 # Start our application
-python3.6 $TOPDIR/src/http_server.py $SIMULATE -u $TOPDIR/ui/ $*
+python3 $TOPDIR/src/http_server.py -u $TOPDIR/ui/ $*

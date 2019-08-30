@@ -36,16 +36,16 @@ class MyHTTPServer(HTTPServer):
 # A custom http request handler class factory.
 # Handle the GET and POST requests from the UI form and JS.
 # The class factory allows us to pass custom arguments to the handler.
-def RequestHandlerClassFactory(simulate, address, ssids):
+def RequestHandlerClassFactory(address, ssids, rcode):
 
     class MyHTTPReqHandler(SimpleHTTPRequestHandler):
 
         def __init__(self, *args, **kwargs):
             # We must set our custom class properties first, since __init__() of
             # our super class will call do_GET().
-            self.simulate = simulate
             self.address = address
             self.ssids = ssids
+            self.rcode = rcode
             super(MyHTTPReqHandler, self).__init__(*args, **kwargs)
 
         # See if this is a specific request, otherwise let the server handle it.
@@ -62,6 +62,16 @@ def RequestHandlerClassFactory(simulate, address, ssids):
                 print(f'redirecting to {new_path}')
                 self.send_header('Location', new_path)
                 self.end_headers()
+
+            # Handle a REST API request to return the device registration code
+            if '/regcode' == self.path:
+                self.send_response(200)
+                self.end_headers()
+                response = BytesIO()
+                response.write(json.dumps(self.rcode).encode('utf-8'))
+                print(f'GET {self.path} returning: {response.getvalue()}')
+                self.wfile.write(response.getvalue())
+                return
 
             # Handle a REST API request to return the list of SSIDs
             if '/networks' == self.path:
@@ -82,16 +92,6 @@ def RequestHandlerClassFactory(simulate, address, ssids):
                     HIDDEN, WEP, WPA, WPA2 - Need password.
                     ENTERPRISE             - Need username and password.
                 """
-                if self.simulate:
-                    print(f'Simulating a list of NetworkManager APs')
-                    ssids = [{"ssid": "open network", "security": "NONE"}, \
-                             {"ssid": "wpa2", "security":"WPA2"}, \
-                             {"ssid": "wep", "security":"WEP"}, \
-                             {"ssid": "wpa", "security":"WPA"}, \
-                             {"ssid": "enterprise", "security": "ENTERPRISE"}, \
-                             {"ssid": "Enter a hidden WiFi name", \
-                                "security": "HIDDEN"}]
-
                 response.write(json.dumps(ssids).encode('utf-8'))
                 print(f'GET {self.path} returning: {response.getvalue()}')
                 self.wfile.write(response.getvalue())
@@ -169,26 +169,26 @@ def RequestHandlerClassFactory(simulate, address, ssids):
                 sys.exit()
             else:
                 print(f'Connection failed, restarting the hotspot.')
-                if not self.simulate:
-                    # Update the list of SSIDs since we are not connected
-                    self.ssids = netman.get_list_of_access_points()
 
-                    # Start the hotspot again
-                    netman.start_hotspot() 
+                # Update the list of SSIDs since we are not connected
+                self.ssids = netman.get_list_of_access_points()
+
+                # Start the hotspot again
+                netman.start_hotspot() 
 
     return  MyHTTPReqHandler # the class our factory just created.
 
 
 #------------------------------------------------------------------------------
 # Create the hotspot, start dnsmasq, start the HTTP server.
-def main(address, port, ui_path, simulate, delete_connections):
+def main(address, port, ui_path, rcode, delete_connections):
 
     # See if caller wants to delete all existing connections first
-    if delete_connections and not simulate:
+    if delete_connections:
         netman.delete_all_wifi_connections()
 
     # Check if we are already connected, if so we are done.
-    if netman.have_active_internet_connection() and not simulate:
+    if netman.have_active_internet_connection():
         print('Already connected to the internet, nothing to do, exiting.')
         sys.exit()
 
@@ -199,14 +199,13 @@ def main(address, port, ui_path, simulate, delete_connections):
     ssids = netman.get_list_of_access_points()
 
     # Start the hotspot
-    if not netman.start_hotspot() and not simulate:
+    if not netman.start_hotspot():
         print('Error starting hotspot, exiting.')
         sys.exit(1)
 
     # Start dnsmasq (to advertise us as a router so captured portal pops up
     # on the users machine to vend our UI in our http server)
-    if not simulate:
-        dnsmasq.start()
+    dnsmasq.start()
 
     # Find the ui directory which is up one from where this file is located.
     web_dir = os.path.join(os.path.dirname(__file__), ui_path)
@@ -220,7 +219,7 @@ def main(address, port, ui_path, simulate, delete_connections):
     server_address = (address, port)
 
     # Custom request handler class (so we can pass in our own args)
-    MyRequestHandlerClass = RequestHandlerClassFactory(simulate, address, ssids)
+    MyRequestHandlerClass = RequestHandlerClassFactory(address, ssids, rcode)
 
     # Start an HTTP server to serve the content in the ui dir and handle the 
     # POST request in the handler class.
@@ -251,8 +250,8 @@ if __name__ == "__main__":
     address = ADDRESS
     port = PORT
     ui_path = UI_PATH
-    simulate = False
     delete_connections = False
+    rcode = ""
 
     usage = ''\
 f'Command line args: \n'\
@@ -260,11 +259,11 @@ f'  -a <HTTP server address>     Default: {address} \n'\
 f'  -p <HTTP server port>        Default: {port} \n'\
 f'  -u <UI directory to serve>   Default: "{ui_path}" \n'\
 f'  -d Delete Connections First  Default: {delete_connections} \n'\
-f'  -s Simulate NetworkManager   Default: {simulate} \n'\
+f'  -r Device Registration Code  Default: "" \n'\
 f'  -h Show help.\n'
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "a:p:u:dsh")
+        opts, args = getopt.getopt(sys.argv[1:], "a:p:u:r:dh")
     except getopt.GetoptError:
         print(usage)
         sys.exit(2)
@@ -277,8 +276,8 @@ f'  -h Show help.\n'
         elif opt in ("-d"):
            delete_connections = True
 
-        elif opt in ("-s"):
-            simulate = True
+        elif opt in ("-r"):
+            rcode = arg
 
         elif opt in ("-a"):
             address = arg
@@ -292,8 +291,8 @@ f'  -h Show help.\n'
     print(f'Address={address}')
     print(f'Port={port}')
     print(f'UI path={ui_path}')
-    print(f'Simulate={simulate}')
+    print(f'Device registration code={rcode}')
     print(f'Delete Connections={delete_connections}')
-    main(address, port, ui_path, simulate, delete_connections)
+    main(address, port, ui_path, rcode, delete_connections)
 
 

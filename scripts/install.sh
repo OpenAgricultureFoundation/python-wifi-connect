@@ -17,16 +17,16 @@ TOPDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TOPDIR+=/..
 cd $TOPDIR
 
-# Check if python and pip (3.6) is installed
-echo "Checking that python and pip 3.6 are installed..."
-INSTALL_PATH=`which python3.6`
+# Check if python3 and pip are installed
+echo "Checking that python3 and pip are installed..."
+INSTALL_PATH=`which python3`
 if [[ ! -f "$INSTALL_PATH" ]]; then
-    echo "ERROR: python3.6 is not installed."
+    echo "ERROR: python3 is not installed."
     exit 1
 fi
-INSTALL_PATH=`which pip3.6`
+INSTALL_PATH=`which pip3`
 if [[ ! -f "$INSTALL_PATH" ]]; then
-    echo "ERROR: pip3.6 is not installed."
+    echo "ERROR: pip3 is not installed."
     exit 1
 fi
 
@@ -35,7 +35,7 @@ rm -fr $TOPDIR/venv
 
 # Create a virtual environment (venv)
 echo "Creating a python virtual environment..."
-python3.6 -m venv $TOPDIR/venv
+python3 -m venv $TOPDIR/venv
 
 # Only install python modules on Linux (they are OS specific).
 if [[ "$OSTYPE" == "linux"* ]]; then
@@ -44,7 +44,7 @@ if [[ "$OSTYPE" == "linux"* ]]; then
 
     # Install the python modules our app uses into our venv
     echo "Installing python modules..."
-    pip3.6 install -r $TOPDIR/config/requirements.txt
+    pip3 install -r $TOPDIR/config/requirements.txt
 
     # Deactivate the venv
     deactivate
