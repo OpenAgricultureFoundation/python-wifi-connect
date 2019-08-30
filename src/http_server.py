@@ -68,7 +68,7 @@ def RequestHandlerClassFactory(address, ssids, rcode):
                 self.send_response(200)
                 self.end_headers()
                 response = BytesIO()
-                response.write(json.dumps(self.rcode).encode('utf-8'))
+                response.write(self.rcode.encode('utf-8'))
                 print(f'GET {self.path} returning: {response.getvalue()}')
                 self.wfile.write(response.getvalue())
                 return
@@ -96,6 +96,11 @@ def RequestHandlerClassFactory(address, ssids, rcode):
                 print(f'GET {self.path} returning: {response.getvalue()}')
                 self.wfile.write(response.getvalue())
                 return
+
+            # Not sure if this is just OSX hitting the captured portal,
+            # but we need to exit if we get it.
+            if '/bag' == self.path:
+                sys.exit()
 
             # All other requests are handled by the server which vends files 
             # from the ui_path we were initialized with.
@@ -251,7 +256,7 @@ if __name__ == "__main__":
     port = PORT
     ui_path = UI_PATH
     delete_connections = False
-    rcode = ""
+    rcode = ''
 
     usage = ''\
 f'Command line args: \n'\

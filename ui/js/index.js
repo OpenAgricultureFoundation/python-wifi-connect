@@ -26,22 +26,18 @@ $(function(){
     $('#ssid-select').change(showHideFormFields);
 
     $.get("/regcode", function(data){
-        console.log('regcode=',data);
         if(data.length !== 0){
-            regcode = JSON.parse(data);
-            $('#reg.code').val(regcode);
+            $('#regcode').val(data);
         }
     });
 
     $.get("/networks", function(data){
-        console.log('data=',data);
         if(data.length === 0){
             $('.before-submit').hide();
             $('#no-networks-message').removeClass('hidden');
         } else {
             networks = JSON.parse(data);
             $.each(networks, function(i, val){
-                console.log('val=',val);
                 $('#ssid-select').append(
                     $('<option>')
                         .text(val.ssid)
