@@ -151,7 +151,7 @@ def get_list_of_access_points():
 #------------------------------------------------------------------------------
 # Get hotspot SSID name.
 def get_hotspot_SSID():
-    return 'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT')
+    return 'PFC_EDU-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT','aged-cheese')
 
 
 #------------------------------------------------------------------------------

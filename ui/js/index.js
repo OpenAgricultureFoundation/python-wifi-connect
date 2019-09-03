@@ -25,15 +25,19 @@ $(function(){
 
     $('#ssid-select').change(showHideFormFields);
 
+    $.get("/regcode", function(data){
+        if(data.length !== 0){
+            $('#regcode').val(data);
+        }
+    });
+
     $.get("/networks", function(data){
-        console.log('debugrob data=',data);
         if(data.length === 0){
             $('.before-submit').hide();
             $('#no-networks-message').removeClass('hidden');
         } else {
             networks = JSON.parse(data);
             $.each(networks, function(i, val){
-                console.log('debugrob val=',val);
                 $('#ssid-select').append(
                     $('<option>')
                         .text(val.ssid)
