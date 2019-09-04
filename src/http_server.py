@@ -115,7 +115,7 @@ def RequestHandlerClassFactory(address, ssids, rcode):
             self.end_headers()
             response = BytesIO()
             fields = parse_qs(body.decode('utf-8'))
-            print(f'POST received: {fields}')
+            #print(f'POST received: {fields}')
 
             # Parse the form post
             FORM_SSID = 'ssid'
