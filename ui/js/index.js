@@ -28,7 +28,9 @@ $(function(){
     $.get("/regcode", function(data){
         if(data.length !== 0){
             $('#regcode').val(data);
-        }
+        } else { 
+            $('.reg-row').hide(); // no reg code, so hide that part of the UI
+	}
     });
 
     $.get("/networks", function(data){
