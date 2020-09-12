@@ -1,30 +1,48 @@
-FROM balenalib/raspberrypi3-ubuntu-python:3.6-bionic-build
+FROM python:3.8.5-slim AS compile-image
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends build-essential gcc
+RUN apt-get install -y --no-install-recommends libdbus-glib-1-dev libdbus-1-dev
+
+WORKDIR /app
+
+RUN python -m venv /opt/venv
+# Make sure we use the virtualenv:
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY ./config/requirements.txt .
+RUN pip install -r requirements.txt
+
+# ------------------------------------------------------------------------------------
+FROM python:3.8.5-slim AS build-image
 
 ARG DEFAULT_INTERFACE
 ENV DEFAULT_INTERFACE ${DEFAULT_INTERFACE:-"wlan0"}
+
 ARG DISABLE_HOTSPOT
 ENV DISABLE_HOTSPOT ${DISABLE_HOTSPOT:-0}
+
 ARG DEFAULT_GATEWAY
 ENV DEFAULT_GATEWAY ${DEFAULT_GATEWAY:-"192.168.42.1"}
+
 ARG DEFAULT_DHCP_RANGE
 ENV DEFAULT_DHCP_RANGE ${DEFAULT_DHCP_RANGE:-"192.168.42.2,192.168.42.254"}
 
-WORKDIR /usr/src/app
-# RUN [ "cross-build-start" ]
-#RUN install_packages \
-#  network-manager
-  # \
-  #python3-networkmanager
+ARG DBUS_SYSTEM_BUS_ADDRESS
+ENV DBUS_SYSTEM_BUS_ADDRESS ${DBUS_SYSTEM_BUS_ADDRESS:-"unix:path=/var/run/dbus/system_bus_socket"}
 
-#COPY . .
-RUN apt update
-RUN apt install -y dnsmasq
+COPY --from=compile-image /opt/venv /opt/venv
 
-#RUN chmod +x scripts/*
-#RUN scripts/install.sh
-# RUN [ "cross-build-end" ]
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends dbus dnsmasq 
+#procps
 
-ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket
+COPY src/ ./app/src/
+COPY nm_scripts/ ./app/nm_scripts/
+COPY scripts/ ./app/scripts/
+COPY ui/ ./app/ui/
 
-#CMD scripts/run.sh
-CMD sleep 900000
+# Make sure we use the virtualenv:
+ENV PATH="/opt/venv/bin:$PATH"
+
+CMD app/scripts/run.sh

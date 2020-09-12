@@ -48,7 +48,7 @@ if [[ "$OSTYPE" == "linux"* ]]; then
 
 #     # Deactivate the venv
 #     deactivate
-    pip3 install -r $TOPDIR/config/requirements.txt
+    pip3 install -r $TOPDIR/config/requirements.txt --extra-index-url=https://www.piwheels.org/simple
 fi
 
 echo "Done."
