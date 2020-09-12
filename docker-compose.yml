@@ -1,0 +1,16 @@
+version: '2'
+services:
+  hostpot-orig:
+    build: .
+    environment:
+      - 'DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket'
+      - 'DEFAULT_INTERFACE=wlan0'
+      - 'DISABLE_HOTSPOT=0'
+      - 'DEFAULT_GATEWAY=192.168.42.1'
+      - 'DEFAULT_DHCP_RANGE=192.168.42.2,192.168.42.254'
+    volumes:
+      - /run/user/1000/bus:/run/user/1000/bus
+      - /run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+      - .:/usr/src/app
+    privileged: true
+    network_mode: "host"

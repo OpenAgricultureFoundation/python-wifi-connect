@@ -1,1 +1,1 @@
-python-networkmanager
+python-networkmanager==2.1

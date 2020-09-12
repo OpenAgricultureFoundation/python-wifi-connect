@@ -51,24 +51,36 @@ def RequestHandlerClassFactory(address, ssids, rcode):
         # See if this is a specific request, otherwise let the server handle it.
         def do_GET(self):
 
-            print(f'do_GET {self.path}')
-
-            # Handle the hotspot starting and a computer connecting to it,
-            # we have to return a redirect to the gateway to get the 
-            # captured portal to show up.
-            if '/hotspot-detect.html' == self.path:
+            def redirect (self):
                 self.send_response(301) # redirect
                 new_path = f'http://{self.address}/'
                 print(f'redirecting to {new_path}')
                 self.send_header('Location', new_path)
                 self.end_headers()
 
+            print(f'do_GET {self.path}')
+
+            # Handle the hotspot starting and a computer connecting to it,
+            # we have to return a redirect to the gateway to get the 
+            # captured portal to show up.
+            if '/hotspot-detect.html' == self.path:
+                redirect(self)
+
+            # For Android Devices
+            if '/generate_204' == self.path:
+                redirect(self)
+
+            # For Windows 10?
+            if '/connecttest.txt' == self.path:
+                redirect(self)
+
             # Handle a REST API request to return the device registration code
             if '/regcode' == self.path:
                 self.send_response(200)
                 self.end_headers()
                 response = BytesIO()
-                response.write(self.rcode.encode('utf-8'))
+                #response.write(self.rcode.encode('utf-8'))
+                response.write(self.rcode.encode())
                 print(f'GET {self.path} returning: {response.getvalue()}')
                 self.wfile.write(response.getvalue())
                 return
@@ -92,7 +104,9 @@ def RequestHandlerClassFactory(address, ssids, rcode):
                     HIDDEN, WEP, WPA, WPA2 - Need password.
                     ENTERPRISE             - Need username and password.
                 """
-                response.write(json.dumps(ssids).encode('utf-8'))
+                response.write(json.dumps(ssids).encode())
+                # response.write(json.dumps(ssids)).encode('utf-8')
+
                 print(f'GET {self.path} returning: {response.getvalue()}')
                 self.wfile.write(response.getvalue())
                 return
@@ -109,7 +123,12 @@ def RequestHandlerClassFactory(address, ssids, rcode):
 
         # test with: curl localhost:5000 -d "{'name':'value'}"
         def do_POST(self):
-            content_length = int(self.headers['Content-Length'])
+            content_length = {}
+            try: 
+                content_length = int(self.headers['Content-Length'])
+            except TypeError:
+                content_length = 0
+
             body = self.rfile.read(content_length)
             self.send_response(200)
             self.end_headers()

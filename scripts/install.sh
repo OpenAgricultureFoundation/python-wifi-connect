@@ -34,20 +34,21 @@ fi
 rm -fr $TOPDIR/venv
 
 # Create a virtual environment (venv)
-echo "Creating a python virtual environment..."
-python3 -m venv $TOPDIR/venv
+# echo "Creating a python virtual environment..."
+# python3 -m venv $TOPDIR/venv
 
 # Only install python modules on Linux (they are OS specific).
 if [[ "$OSTYPE" == "linux"* ]]; then
-    # Use the venv
-    source $TOPDIR/venv/bin/activate
+#     # Use the venv
+#     source $TOPDIR/venv/bin/activate
 
-    # Install the python modules our app uses into our venv
-    echo "Installing python modules..."
+#     # Install the python modules our app uses into our venv
+#     echo "Installing python modules..."
+#     pip3 install -r $TOPDIR/config/requirements.txt
+
+#     # Deactivate the venv
+#     deactivate
     pip3 install -r $TOPDIR/config/requirements.txt
-
-    # Deactivate the venv
-    deactivate
 fi
 
 echo "Done."

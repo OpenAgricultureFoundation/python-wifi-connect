@@ -1,5 +1,7 @@
-# python-wifi-connect
+# python-wifi-connect 
+## Docker version
 An application that displays a wifi configuration UI for embedded Linux devices.
+Forked from [OpenAgricultureFoundation](https://github.com/OpenAgricultureFoundation/python-wifi-connect)
 
 Inspired by the [wifi-connect](https://github.com/balena-io/wifi-connect) project written by [balena.io](https://www.balena.io/).
 
