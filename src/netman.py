@@ -37,6 +37,11 @@ def delete_all_wifi_connections():
 
     # Delete the '802-11-wireless' connections
     for connection in connections:
+        # print(dir(connection), flush=True)
+        # print(vars(connection), flush=True)
+        print(f'-----------------------------------------------', flush=True)
+        print(connection.GetSettings(), flush=True)
+
         if connection.GetSettings()["connection"]["type"] == "802-11-wireless":
             print("Deleting connection "
                 + connection.GetSettings()["connection"]["id"]
@@ -82,9 +87,21 @@ def get_list_of_access_points():
     ssids = [] # list we return
 
     for dev in NetworkManager.NetworkManager.GetDevices():
+        print(f'Device Interface: {dev.Interface}', flush=True)
+        print(f'Device DeviceType: {dev.DeviceType}', flush=True)
+        print(f'Device State: {dev.State}', flush=True)
+        print(f'Device StateReason: {dev.StateReason}', flush=True)
+        print(f'Device ActiveConnection: {dev.ActiveConnection}', flush=True)
+        print(f'-----------------------------------------------', flush=True)
         if dev.DeviceType != NetworkManager.NM_DEVICE_TYPE_WIFI:
+            print(f'-----------------------------------------------', flush=True)
+            print(f'dev.DeviceType != NetworkManager.NM_DEVICE_TYPE_WIFI', flush=True)
+            print(f'-----------------------------------------------', flush=True)
             continue
         for ap in dev.GetAccessPoints():
+            print(f'-----------------------------------------------', flush=True)
+            print(f'dev.DeviceType == NetworkManager.NM_DEVICE_TYPE_WIFI', flush=True)
+            print(f'-----------------------------------------------', flush=True)
 
             # Get Flags, WpaFlags and RsnFlags, all are bit OR'd combinations 
             # of the NM_802_11_AP_SEC_* bit flags.
@@ -111,7 +128,7 @@ def get_list_of_access_points():
                     ap.RsnFlags & NetworkManager.NM_802_11_AP_SEC_KEY_MGMT_802_1X:
                 security = NM_SECURITY_ENTERPRISE
 
-            #print(f'{ap.Ssid:15} Flags=0x{ap.Flags:X} WpaFlags=0x{ap.WpaFlags:X} RsnFlags=0x{ap.RsnFlags:X}')
+            print(f'{ap.Ssid:15} Flags=0x{ap.Flags:X} WpaFlags=0x{ap.WpaFlags:X} RsnFlags=0x{ap.RsnFlags:X}', flush=True)
 
             # Decode our flag into a display string
             security_str = ''
@@ -145,7 +162,7 @@ def get_list_of_access_points():
     # always add a hidden place holder
     ssids.append({"ssid": "Enter a hidden WiFi name", "security": "HIDDEN"})
 
-    print(f'Available SSIDs: {ssids}')
+    print(f'Available SSIDs: {ssids}', flush=True)
     return ssids
 
 
