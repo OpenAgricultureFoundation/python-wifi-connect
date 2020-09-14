@@ -37,17 +37,12 @@ def delete_all_wifi_connections():
 
     # Delete the '802-11-wireless' connections
     for connection in connections:
-        # print(dir(connection), flush=True)
-        # print(vars(connection), flush=True)
-        print(f'-----------------------------------------------', flush=True)
-        print(connection.GetSettings(), flush=True)
-
         if connection.GetSettings()["connection"]["type"] == "802-11-wireless":
             print("Deleting connection "
                 + connection.GetSettings()["connection"]["id"]
             )
             connection.Delete()
-    time.sleep(2)
+    time.sleep(5)
 
 
 #------------------------------------------------------------------------------
@@ -87,21 +82,10 @@ def get_list_of_access_points():
     ssids = [] # list we return
 
     for dev in NetworkManager.NetworkManager.GetDevices():
-        print(f'Device Interface: {dev.Interface}', flush=True)
-        print(f'Device DeviceType: {dev.DeviceType}', flush=True)
-        print(f'Device State: {dev.State}', flush=True)
-        print(f'Device StateReason: {dev.StateReason}', flush=True)
-        print(f'Device ActiveConnection: {dev.ActiveConnection}', flush=True)
-        print(f'-----------------------------------------------', flush=True)
+
         if dev.DeviceType != NetworkManager.NM_DEVICE_TYPE_WIFI:
-            print(f'-----------------------------------------------', flush=True)
-            print(f'dev.DeviceType != NetworkManager.NM_DEVICE_TYPE_WIFI', flush=True)
-            print(f'-----------------------------------------------', flush=True)
             continue
         for ap in dev.GetAccessPoints():
-            print(f'-----------------------------------------------', flush=True)
-            print(f'dev.DeviceType == NetworkManager.NM_DEVICE_TYPE_WIFI', flush=True)
-            print(f'-----------------------------------------------', flush=True)
 
             # Get Flags, WpaFlags and RsnFlags, all are bit OR'd combinations 
             # of the NM_802_11_AP_SEC_* bit flags.

@@ -275,7 +275,7 @@ if __name__ == "__main__":
     address = ADDRESS
     port = PORT
     ui_path = UI_PATH
-    delete_connections = False
+    delete_connections = True
     rcode = ''
 
     usage = ''\
