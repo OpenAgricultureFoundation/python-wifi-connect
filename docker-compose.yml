@@ -8,7 +8,11 @@ services:
       - 'DISABLE_HOTSPOT=0'
       - 'DEFAULT_GATEWAY=192.168.42.1'
       - 'DEFAULT_DHCP_RANGE=192.168.42.2,192.168.42.254'
+      - 'PORT=80'
       - 'DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket'
+      - 'PREFIX_SSID=SSID-'
+      - 'SUFIX_SSID=beta'
+      - 'RESIN_DEVICE_NAME_AT_INIT='
     volumes:
       - /run/user/1000/bus:/run/user/1000/bus
       - /run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket

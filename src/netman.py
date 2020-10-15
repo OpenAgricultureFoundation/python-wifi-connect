@@ -22,8 +22,8 @@ def have_active_internet_connection(host="8.8.8.8", port=53, timeout=2):
    try:
      socket.setdefaulttimeout(timeout)
      socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
-     # return True
-     return False
+     return True
+    #return False
    except Exception as e:
      #print(f"Exception: {e}")
      return False
@@ -153,7 +153,7 @@ def get_list_of_access_points():
 #------------------------------------------------------------------------------
 # Get hotspot SSID name.
 def get_hotspot_SSID():
-    return 'SSID-'+os.getenv('RESIN_DEVICE_NAME_AT_INIT','beta')
+    return os.getenv('PREFIX_SSID')+os.getenv('RESIN_DEVICE_NAME_AT_INIT')+os.getenv('SUFIX_SSID')
 
 
 #------------------------------------------------------------------------------

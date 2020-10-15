@@ -10,8 +10,8 @@ import netman
 import dnsmasq
 
 # Defaults
-ADDRESS = '192.168.42.1'
-PORT = 80
+ADDRESS = os.environ['DEFAULT_GATEWAY']
+PORT = int(os.environ['PORT'])
 UI_PATH = '../ui'
 
 
@@ -74,6 +74,10 @@ def RequestHandlerClassFactory(address, ssids, rcode):
             if '/connecttest.txt' == self.path:
                 redirect(self)
 
+            # For Ubuntu
+            if '/misc/check_network_status.txt' == self.path:
+                redirect(self)
+
             # Handle a REST API request to return the device registration code
             if '/regcode' == self.path:
                 self.send_response(200)
@@ -128,13 +132,12 @@ def RequestHandlerClassFactory(address, ssids, rcode):
                 content_length = int(self.headers['Content-Length'])
             except TypeError:
                 content_length = 0
-
             body = self.rfile.read(content_length)
             self.send_response(200)
             self.end_headers()
             response = BytesIO()
             fields = parse_qs(body.decode('utf-8'))
-            #print(f'POST received: {fields}')
+            print(f'POST received: {fields}')
 
             # Parse the form post
             FORM_SSID = 'ssid'
