@@ -155,6 +155,9 @@ def get_list_of_access_points():
 def get_hotspot_SSID():
     return os.getenv('PREFIX_SSID')+os.getenv('RESIN_DEVICE_NAME_AT_INIT')+os.getenv('SUFIX_SSID')
 
+    # Add last 4 caracters from mac address.
+    #return os.getenv('PREFIX_SSID')+os.getenv('RESIN_DEVICE_NAME_AT_INIT')+(hex(uuid.getnode()))[-4:]
+
 
 #------------------------------------------------------------------------------
 # Start a local hotspot on the wifi interface.
