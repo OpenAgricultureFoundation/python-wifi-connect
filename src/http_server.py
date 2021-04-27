@@ -63,6 +63,13 @@ def RequestHandlerClassFactory(address, ssids, rcode):
                 self.send_header('Location', new_path)
                 self.end_headers()
 
+            if '/generate_204' == self.path:
+                self.send_response(301) # redirect
+                new_path = f'http://{self.address}/'
+                print(f'redirecting to {new_path}')
+                self.send_header('Location', new_path)
+                self.end_headers()
+
             # Handle a REST API request to return the device registration code
             if '/regcode' == self.path:
                 self.send_response(200)
