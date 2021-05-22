@@ -68,7 +68,12 @@ def RequestHandlerClassFactory(address, ssids, rcode):
 
             # For Android Devices
             if '/generate_204' == self.path:
-                redirect(self)
+                self.send_response(301) # redirect
+                new_path = f'http://{self.address}/'
+                print(f'redirecting to {new_path}')
+                self.send_header('Location', new_path)
+                self.end_headers()
+               # redirect(self)
 
             # For Windows 10?
             if '/connecttest.txt' == self.path:
