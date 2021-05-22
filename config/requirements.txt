@@ -1,3 +1,2 @@
-wheel
 dbus-python==1.2.16
 python-networkmanager==2.1

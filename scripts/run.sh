@@ -20,7 +20,7 @@ TOPDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 cd $TOPDIR
 
 # Use the venv
-source $TOPDIR/venv/bin/activate
+# source $TOPDIR/venv/bin/activate
 
 # Start our application
 python3 $TOPDIR/src/http_server.py -u $TOPDIR/ui/ $*

@@ -2,6 +2,7 @@ version: '3'
 services:
   hostpot:
     build: .
+    container_name: 'net_manager'
     environment:
       - 'DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket'
       - 'DEFAULT_INTERFACE=wlan0'
